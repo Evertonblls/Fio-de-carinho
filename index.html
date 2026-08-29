@@ -4,8 +4,15 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <meta name="theme-color" content="#FAF5EC" />
-<meta name="description" content="Fio de Carinho: coleção digital com 100 riscos para pano de prato, prontos para imprimir, transferir e bordar à mão." />
-<title>Fio de Carinho | 100 Riscos para Pano de Prato</title>
+<meta name="description" content="Tenha riscos e modelos organizados para mostrar às suas clientes, encontrar o desenho certo mais rápido e facilitar suas encomendas de bordado." />
+<title>Biblioteca da Bordadeira | Fio de Carinho — Modelos para Quem Faz Encomendas</title>
+
+<meta property="og:type" content="website" />
+<meta property="og:locale" content="pt_BR" />
+<meta property="og:title" content="Biblioteca da Bordadeira | Fio de Carinho" />
+<meta property="og:description" content="Pare de perder horas procurando o modelo certo para cada cliente. Tenha um acervo organizado de riscos para mostrar, escolher e bordar suas encomendas com mais praticidade." />
+<meta property="og:image" content="https://fio-de-carinho.vercel.app/images/hero/capa-fio-de-carinho.jpg" />
+<meta property="og:url" content="https://fio-de-carinho.vercel.app/" />
 
 <!-- Meta Pixel Code -->
 <script>
@@ -54,34 +61,53 @@ src="https://www.facebook.com/tr?id=1096195466206984&ev=PageView&noscript=1"
     background-image: repeating-linear-gradient(90deg, #6B7A4F 0 8px, transparent 8px 16px);
     height: 2px;
   }
+  .mosaic-item { transition: transform .25s ease; }
+  .mosaic-item:hover { transform: translateY(-4px); }
+  .badge-soon {
+    background-image: repeating-linear-gradient(45deg, rgba(122,59,46,.06) 0 6px, transparent 6px 12px);
+  }
+  .sticky-cta {
+    transform: translateY(120%);
+    transition: transform .35s ease;
+  }
+  .sticky-cta.is-visible { transform: translateY(0); }
+  .flow-arrow { color: #6B7A4F; }
+  @media (min-width: 1024px) { .flow-arrow-v { display: none; } }
+  @media (max-width: 1023px) { .flow-arrow-h { display: none; } }
 </style>
 </head>
 <body class="font-sans text-ink antialiased">
 
-<!-- Utmify Back Redirect -->
+<!-- ===================== CONFIG DE CHECKOUT (centralizado) ===================== -->
 <script>
-  const link = 'https://pay.wiapy.com/MgTp9p49hx_s';
+  // Centraliza todos os links de checkout usados na página.
+  // Troque aqui quando os links de pagamento mudarem — não é necessário editar o resto do HTML.
+  window.CHECKOUT = {
+    ESSENCIAL: 'https://pay.wiapy.com/UtgNOPgFHFCn',        // Biblioteca Essencial, R$10
+    COMPLETO: 'https://pay.wiapy.com/EUBE-WpYBlrX',          // Biblioteca Completa, R$20
+    COMPLETO_UPSELL: 'https://pay.wiapy.com/MgTp9p49hx_s',   // Oferta especial da Completa mostrada no modal ao clicar em "Essencial"
+  };
 
-  function setBackRedirect(url) {
-    let urlBackRedirect = url;
-    urlBackRedirect = urlBackRedirect =
-      urlBackRedirect.trim() +
-      (urlBackRedirect.indexOf('?') > 0 ? '&' : '?') +
-      document.location.search.replace('?', '').toString();
-
-    history.pushState({}, '', location.href);
-    history.pushState({}, '', location.href);
-    history.pushState({}, '', location.href);
-
-    window.addEventListener('popstate', () => {
-      console.log('onpopstate', urlBackRedirect);
-      setTimeout(() => {
-        location.href = urlBackRedirect;
-      }, 1);
-    });
-  }
-
-  setBackRedirect(link);
+  // ===================== ARQUITETURA DE FUNIL (documentação, nada abaixo é usado nesta página) =====================
+  // Esta landing page vende SOMENTE o produto principal (Biblioteca Essencial / Biblioteca Completa).
+  // Os produtos abaixo são planejados para as próximas etapas do funil e NÃO devem ser misturados
+  // como bônus gratuitos do produto principal. Nenhuma URL de checkout existe ainda para eles.
+  //
+  // 1) PRODUTO PRINCIPAL — Biblioteca da Bordadeira (implementado nesta página)
+  //    Essencial R$10 / Completa R$20
+  //
+  // 2) ORDER BUMP 1 — Kit da Bordadeira Organizada — R$9,90 (planejado)
+  //    Planilha de Precificação, Ficha de Encomenda, Controle de Pedidos,
+  //    Mensagens Prontas para WhatsApp, Etiquetas, Cartões de Agradecimento + bônus Lista de Fornecedores.
+  //    Requer checkout com suporte a order bump — se o checkout for externo (como o atual), não
+  //    implementar nada automático aqui; apenas manter esta documentação até a integração existir.
+  //    ORDER_BUMP_KIT_ORGANIZADA: '',
+  //
+  // 3) ORDER BUMP 2 — Coleção Especial Panos de Prato — R$7,90–9,90 (planejado)
+  //    ORDER_BUMP_PANOS_DE_PRATO: '',
+  //
+  // 4) UPSELL — Biblioteca do Enxoval Bordado — R$19,90–27 (planejado, página própria futura)
+  //    UPSELL_BIBLIOTECA_ENXOVAL: '',
 </script>
 
 <!-- ===================== HEADER ===================== -->
@@ -94,553 +120,416 @@ src="https://www.facebook.com/tr?id=1096195466206984&ev=PageView&noscript=1"
       <span class="font-serif font-bold text-primary text-base sm:text-lg tracking-tight">Fio de Carinho</span>
     </div>
     <nav class="hidden md:flex items-center gap-8 font-sans text-sm font-medium text-ink/70">
-      <a href="#catalogo" class="hover:text-primary transition-colors">Catálogo</a>
-      <a href="#metodo" class="hover:text-primary transition-colors">Método</a>
+      <a href="#biblioteca" class="hover:text-primary transition-colors">Biblioteca</a>
+      <a href="#como-funciona" class="hover:text-primary transition-colors">Como Funciona</a>
       <a href="#depoimentos" class="hover:text-primary transition-colors">Depoimentos</a>
+      <a href="#oferta" class="hover:text-primary transition-colors">Planos</a>
     </nav>
     <a href="#oferta" class="hidden sm:inline-flex items-center gap-2 bg-primary hover:bg-primary-hover text-white text-xs font-bold uppercase tracking-wide px-4 py-2.5 rounded-full transition-colors">
-      Quero o Meu
+      Quero Acessar
     </a>
   </div>
 </header>
 
 <main class="pt-16">
 
-  <!-- ===================== HERO ===================== -->
-  <section class="w-full px-5 lg:px-10 py-12 lg:py-20">
-    <div class="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-[1.05fr_0.95fr] gap-10 lg:gap-14 items-center">
+  <!-- ===================== 1. HERO ===================== -->
+  <section id="inicio" class="w-full px-5 lg:px-10 py-14 lg:py-24">
+    <div class="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-[1.05fr_0.95fr] gap-10 lg:gap-16 items-center">
       <div>
-        <p class="font-sans text-xs font-bold uppercase tracking-[0.18em] text-accent mb-4">Coleção digital de bordado</p>
-        <h1 class="font-serif font-black text-primary text-[2.35rem] leading-[1.08] sm:text-5xl lg:text-[3.4rem] mb-6">
-          100 Riscos para Pano de Prato Prontos para
-          <em class="italic font-semibold text-accent">Imprimir</em>,
-          Transferir e Bordar à Mão
+        <p class="font-sans text-xs sm:text-sm font-bold uppercase tracking-[0.18em] text-accent mb-5">Para bordadeiras que trabalham com encomendas</p>
+
+        <h1 class="font-serif font-black text-primary text-3xl sm:text-4xl lg:text-5xl leading-[1.15] mb-6">
+          <span class="text-accent">+100 modelos</span> organizados para você ter sempre o risco certo para mostrar às clientes e <span class="text-accent">aproveitar mais encomendas</span>
         </h1>
-        <img src="images/hero/capa-fio-de-carinho.jpg" alt="Fio de Carinho, 100 riscos para panos de prato prontos para imprimir, transferir e bordar à mão" class="w-full max-w-[420px] aspect-square rounded-[1.75rem] border border-primary/15 shadow-xl object-cover mb-8 lg:hidden" />
-        <p class="text-ink/80 text-base lg:text-lg leading-relaxed mb-8 max-w-[520px]">
-          Uma coleção digital em PDF com riscos de bordado prontos para você imprimir, transferir e bordar à mão.
-          Ideal para quem borda por hobby ou revende peças artesanais como panos de prato, jogos americanos,
-          toalhas e quadros em bastidor.
+
+        <div class="lg:hidden mb-8">
+          <div class="relative w-full max-w-[420px] mx-auto">
+            <img src="images/hero/capa-fio-de-carinho.jpg" alt="Acervo Fio de Carinho: riscos de bordado organizados prontos para imprimir" class="w-full aspect-square rounded-[1.75rem] border border-primary/15 shadow-xl object-cover" />
+            <div class="absolute -bottom-5 -right-3 bg-white rounded-xl border border-primary/15 shadow-lg p-1.5 grid grid-cols-2 gap-1 w-24">
+              <img src="images/catalogo/sagrado-coracao-jesus.jpg" alt="" class="aspect-square object-cover rounded-md" />
+              <img src="images/catalogo/galo-carijo-amanhecer.jpg" alt="" class="aspect-square object-cover rounded-md" />
+              <img src="images/catalogo/xicaras-de-cafe.jpg" alt="" class="aspect-square object-cover rounded-md" />
+              <img src="images/catalogo/vasinho-manjericao.jpg" alt="" class="aspect-square object-cover rounded-md" />
+            </div>
+          </div>
+        </div>
+
+        <p class="text-ink/80 text-lg sm:text-xl leading-relaxed mb-8 max-w-[540px]">
+          <strong class="font-semibold text-ink">Pare de perder tempo procurando riscos na internet.</strong> Tenha seus modelos sempre à mão para encontrar opções,
+          mostrar às clientes e começar cada novo pedido com <strong class="font-semibold text-ink">muito mais agilidade</strong>.
         </p>
 
         <div class="grid grid-cols-2 gap-3 mb-9 max-w-[480px]">
           <div class="flex items-center gap-3 bg-white/70 border border-primary/10 rounded-xl px-4 py-3.5 shadow-sm">
             <span class="text-primary shrink-0">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5"><path d="M12 15V3"/><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/></svg>
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
             </span>
-            <span class="text-[12px] sm:text-[13px] font-semibold text-ink leading-tight">PDF Imprimível</span>
+            <span class="text-[13px] sm:text-sm font-semibold text-ink leading-tight">Acervo Organizado</span>
           </div>
           <div class="flex items-center gap-3 bg-white/70 border border-primary/10 rounded-xl px-4 py-3.5 shadow-sm">
             <span class="text-primary shrink-0">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5"><path d="M2 12c2-4 4 4 6 0s4 4 6 0 4 4 6 0"/></svg>
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5"><path d="M12 15V3"/><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/></svg>
             </span>
-            <span class="text-[12px] sm:text-[13px] font-semibold text-ink leading-tight">Bordado Manual</span>
+            <span class="text-[13px] sm:text-sm font-semibold text-ink leading-tight">Pronto para Imprimir</span>
           </div>
           <div class="flex items-center gap-3 bg-white/70 border border-primary/10 rounded-xl px-4 py-3.5 shadow-sm">
             <span class="text-primary shrink-0">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
             </span>
-            <span class="text-[12px] sm:text-[13px] font-semibold text-ink leading-tight">Acesso Imediato</span>
+            <span class="text-[13px] sm:text-sm font-semibold text-ink leading-tight">Acesso Imediato</span>
           </div>
           <div class="flex items-center gap-3 bg-white/70 border border-primary/10 rounded-xl px-4 py-3.5 shadow-sm">
             <span class="text-primary shrink-0">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5"><path d="M12 3v3M12 18v3M3 12h3M18 12h3M6 6l2.5 2.5M15.5 15.5 18 18M18 6l-2.5 2.5M8.5 15.5 6 18"/><circle cx="12" cy="12" r="2.3"/></svg>
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5"><path d="M2 12c2-4 4 4 6 0s4 4 6 0 4 4 6 0"/></svg>
             </span>
-            <span class="text-[12px] sm:text-[13px] font-semibold text-ink leading-tight">Não Precisa Saber Desenhar</span>
+            <span class="text-[13px] sm:text-sm font-semibold text-ink leading-tight">Bordado 100% Manual</span>
           </div>
         </div>
 
-        <a href="#oferta" class="cta-btn inline-flex items-center justify-center gap-3 bg-primary hover:bg-primary-hover text-white font-sans font-bold text-sm sm:text-base uppercase tracking-wide px-8 py-4 sm:px-10 sm:py-5 rounded-full shadow-lg shadow-primary/20 transition-colors w-full sm:w-fit">
-          Quero Meus Riscos
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        <a href="#oferta" class="cta-btn inline-flex items-center justify-center gap-3 bg-primary hover:bg-primary-hover text-white font-sans font-bold text-base sm:text-lg uppercase tracking-wide px-8 py-4 sm:px-10 sm:py-5 rounded-full shadow-lg shadow-primary/20 transition-colors w-full sm:w-fit text-center">
+          Quero Ter Meus Modelos Sempre à Mão
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 shrink-0"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
         </a>
-        <div class="flex items-center gap-2 mt-4 text-[12px] sm:text-[13px] text-ink/60 font-medium">
-          <span class="w-1.5 h-1.5 rounded-full bg-accent shrink-0"></span>
-          <span>Compra segura &bull; Acesso imediato no e-mail &bull; Material digital criado com carinho</span>
+        <div class="flex flex-wrap items-center gap-x-2 gap-y-1 mt-4 text-[13px] text-ink/60 font-medium">
+          <span>Acesso imediato</span><span class="text-accent">&bull;</span>
+          <span>Material digital</span><span class="text-accent">&bull;</span>
+          <span>Pagamento único</span><span class="text-accent">&bull;</span>
+          <span>7 dias de garantia</span>
         </div>
       </div>
 
       <div class="relative hidden lg:block">
-        <img src="images/hero/capa-fio-de-carinho.jpg" alt="Fio de Carinho, 100 riscos para panos de prato prontos para imprimir, transferir e bordar à mão" class="w-full aspect-square rounded-[1.75rem] border border-primary/15 shadow-xl object-cover" />
+        <img src="images/hero/capa-fio-de-carinho.jpg" alt="Acervo Fio de Carinho: riscos de bordado organizados prontos para imprimir" class="w-full aspect-square rounded-[1.75rem] border border-primary/15 shadow-xl object-cover" />
+        <div class="absolute -bottom-8 -left-8 bg-white rounded-2xl border border-primary/15 shadow-2xl p-2.5">
+          <div class="grid grid-cols-2 gap-1.5 w-40">
+            <img src="images/catalogo/sagrado-coracao-jesus.jpg" alt="" class="aspect-square object-cover rounded-lg" />
+            <img src="images/catalogo/galo-carijo-amanhecer.jpg" alt="" class="aspect-square object-cover rounded-lg" />
+            <img src="images/catalogo/xicaras-de-cafe.jpg" alt="" class="aspect-square object-cover rounded-lg" />
+            <img src="images/catalogo/vasinho-manjericao.jpg" alt="" class="aspect-square object-cover rounded-lg" />
+          </div>
+          <p class="text-[11px] font-bold uppercase tracking-wide text-accent text-center mt-2">+100 modelos no acervo</p>
+        </div>
       </div>
     </div>
   </section>
 
   <div class="stitch-divider max-w-6xl mx-auto opacity-30"></div>
 
-    <!-- ===================== FAIXA DE CONFIANÇA ===================== -->
-  <section class="w-full px-5 lg:px-10 py-8 lg:py-10">
-    <div class="max-w-6xl mx-auto grid grid-cols-2 sm:grid-cols-5 gap-3 lg:gap-4">
-      <div class="flex flex-col sm:flex-row items-center sm:items-start gap-2 sm:gap-3 bg-white border border-primary/10 rounded-xl px-3 py-4 text-center sm:text-left">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 text-accent shrink-0"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></svg>
-        <span class="text-[11px] sm:text-xs font-semibold text-ink leading-tight">Compra Segura</span>
-      </div>
-      <div class="flex flex-col sm:flex-row items-center sm:items-start gap-2 sm:gap-3 bg-white border border-primary/10 rounded-xl px-3 py-4 text-center sm:text-left">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 text-accent shrink-0"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
-        <span class="text-[11px] sm:text-xs font-semibold text-ink leading-tight">Acesso Imediato no E-mail</span>
-      </div>
-      <div class="flex flex-col sm:flex-row items-center sm:items-start gap-2 sm:gap-3 bg-white border border-primary/10 rounded-xl px-3 py-4 text-center sm:text-left">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 text-accent shrink-0"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5Z"/><path d="M14 2v6h6"/><path d="M8 13h8M8 17h8M8 9h2"/></svg>
-        <span class="text-[11px] sm:text-xs font-semibold text-ink leading-tight">PDF Pronto para Imprimir</span>
-      </div>
-      <div class="flex flex-col sm:flex-row items-center sm:items-start gap-2 sm:gap-3 bg-white border border-primary/10 rounded-xl px-3 py-4 text-center sm:text-left">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 text-accent shrink-0"><path d="M2 12c2-4 4 4 6 0s4 4 6 0 4 4 6 0"/></svg>
-        <span class="text-[11px] sm:text-xs font-semibold text-ink leading-tight">Material para Bordado Manual</span>
-      </div>
-      <div class="flex flex-col sm:flex-row items-center sm:items-start gap-2 sm:gap-3 bg-white border border-primary/10 rounded-xl px-3 py-4 text-center sm:text-left">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 text-accent shrink-0"><circle cx="12" cy="8" r="6"/><path d="M8.21 13.89 7 23l5-3 5 3-1.21-9.11"/></svg>
-        <span class="text-[11px] sm:text-xs font-semibold text-ink leading-tight">Garantia de 7 Dias</span>
-      </div>
-    </div>
-  </section>
-
-  <!-- ===================== VÍDEO ===================== -->
-  <section class="w-full px-5 lg:px-10 py-16 lg:py-24 bg-white/60">
-    <div class="max-w-3xl mx-auto flex flex-col items-center text-center">
-      <p class="font-sans text-xs font-bold uppercase tracking-[0.18em] text-accent mb-3">Veja antes de decidir</p>
-      <h2 class="font-serif font-bold text-primary text-3xl sm:text-4xl leading-tight mb-4">
-        Veja Por Dentro Como Funciona o <span class="italic text-accent font-semibold">Acervo Fio de Carinho</span>
-      </h2>
-      <p class="text-sm md:text-base text-ink/70 leading-relaxed max-w-xl mb-10">
-        Em poucos minutos, entenda o que você recebe, como usar os riscos e por que esse material facilita tanto a criação de panos de prato bordados à mão.
-      </p>
-
-      <div class="w-full max-w-2xl rounded-2xl border border-primary/15 bg-bg p-2 sm:p-3 shadow-[0_24px_55px_-28px_rgba(122,59,46,0.4)]">
-        <div class="w-full overflow-hidden rounded-xl bg-primary flex items-center justify-center">
-          <video
-            class="w-full h-auto max-h-[70vh] block"
-            controls
-            playsinline
-            preload="metadata"
-            poster="images/hero/video-poster.jpg"
-          >
-            <source src="video/apresentacao.mp4" type="video/mp4" />
-            Seu navegador não suporta a reprodução deste vídeo.
-          </video>
-        </div>
-      </div>
-
-      <a href="https://pay.wiapy.com/EUBE-WpYBlrX" target="_blank" rel="noopener noreferrer" class="cta-btn inline-flex items-center justify-center gap-3 bg-primary hover:bg-primary-hover text-white font-sans font-bold text-sm sm:text-base uppercase tracking-wide px-8 py-4 sm:px-10 sm:py-5 rounded-full shadow-lg shadow-primary/20 transition-colors mt-10">
-        Quero Acessar o Acervo
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5"><path d="m9 18 6-6-6-6"/></svg>
-      </a>
-      <p class="text-[11px] sm:text-xs text-ink/50 font-medium mt-3">Vídeo curto &bull; Produto digital &bull; Acesso imediato</p>
-    </div>
-  </section>
-
-<!-- ===================== CATÁLOGO ===================== -->
-  <section id="catalogo" class="w-full px-5 lg:px-10 py-16 lg:py-24">
+  <!-- ===================== 2. MOSTRUÁRIO DOS MODELOS ===================== -->
+  <section id="biblioteca" class="w-full px-5 lg:px-10 py-16 lg:py-24 bg-white/60">
     <div class="max-w-6xl mx-auto">
-      <div class="text-center max-w-xl mx-auto mb-12 lg:mb-16">
-        <p class="font-sans text-xs font-bold uppercase tracking-[0.18em] text-accent mb-3">Uma pequena amostra</p>
-        <h2 class="font-serif font-bold text-primary text-3xl sm:text-4xl leading-tight">Alguns dos Riscos Inclusos</h2>
+      <div class="text-center max-w-2xl mx-auto mb-10 lg:mb-14">
+        <h2 class="font-serif font-bold text-primary text-[1.85rem] sm:text-4xl lg:text-5xl leading-[1.12] mb-4">+100 Modelos para Você Ter Sempre uma Opção para Mostrar</h2>
+        <p class="text-ink/70 text-base sm:text-lg leading-relaxed">Encontre rapidamente opções para sua próxima peça ou encomenda.</p>
       </div>
-      <div class="grid grid-cols-2 sm:grid-cols-3 gap-4 lg:gap-5">
 
-        <div class="group rounded-xl overflow-hidden border border-primary/10 bg-white shadow-sm">
-          <div class="aspect-square overflow-hidden"><img src="images/catalogo/sagrado-coracao-jesus.jpg" alt="Risco de bordado do Sagrado Coração de Jesus com coroa de espinhos e flores" loading="lazy" class="w-full h-full object-cover" /></div>
-          <p class="text-[12px] sm:text-[13px] font-semibold text-center px-2 py-3 leading-snug">Sagrado Coração de Jesus</p>
+      <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 lg:gap-4 max-w-5xl mx-auto auto-rows-[minmax(0,1fr)]">
+        <div class="mosaic-item col-span-2 row-span-2 rounded-2xl overflow-hidden border border-primary/10 bg-white shadow-sm aspect-square"><img src="images/catalogo/sagrado-coracao-jesus.jpg" alt="Risco de bordado do Sagrado Coração de Jesus com coroa de espinhos e flores" loading="lazy" class="w-full h-full object-cover" /></div>
+        <div class="mosaic-item rounded-2xl overflow-hidden border border-primary/10 bg-white shadow-sm aspect-square"><img src="images/catalogo/nossa-senhora-aparecida.jpg" alt="Risco de bordado de Nossa Senhora Aparecida com coroa e manto azul" loading="lazy" class="w-full h-full object-cover" /></div>
+        <div class="mosaic-item rounded-2xl overflow-hidden border border-primary/10 bg-white shadow-sm aspect-square"><img src="images/catalogo/cogumelos-na-chuva.jpg" alt="Risco de bordado de cogumelos na chuva com nuvem e flores" loading="lazy" class="w-full h-full object-cover" /></div>
+        <div class="mosaic-item rounded-2xl overflow-hidden border border-primary/10 bg-white shadow-sm aspect-square"><img src="images/catalogo/galo-carijo-amanhecer.jpg" alt="Risco de bordado de galo carijó ao amanhecer com sol e flores" loading="lazy" class="w-full h-full object-cover" /></div>
+        <div class="mosaic-item rounded-2xl overflow-hidden border border-primary/10 bg-white shadow-sm aspect-square"><img src="images/catalogo/xicaras-de-cafe.jpg" alt="Risco de bordado de xícaras de café floridas" loading="lazy" class="w-full h-full object-cover" /></div>
+        <div class="mosaic-item rounded-2xl overflow-hidden border border-primary/10 bg-white shadow-sm aspect-square"><img src="images/catalogo/colmeia-abelhinhas.jpg" alt="Risco de bordado de colmeia com abelhinhas e flores" loading="lazy" class="w-full h-full object-cover" /></div>
+        <div class="mosaic-item rounded-2xl overflow-hidden border border-primary/10 bg-white shadow-sm aspect-square"><img src="images/catalogo/casa-feliz-panela-fogo.jpg" alt="Risco de bordado com panela no fogo e frase Casa Feliz, Panela no Fogo" loading="lazy" class="w-full h-full object-cover" /></div>
+        <div class="mosaic-item rounded-2xl overflow-hidden border border-primary/10 bg-white shadow-sm aspect-square"><img src="images/catalogo/vasinho-manjericao.jpg" alt="Risco de bordado de vasinho de manjericão floral" loading="lazy" class="w-full h-full object-cover" /></div>
+        <div class="mosaic-item rounded-2xl overflow-hidden border border-primary/10 bg-white shadow-sm aspect-square"><img src="images/catalogo/peixinhos-aquario.jpg" alt="Risco de bordado de peixinhos dourados em aquário" loading="lazy" class="w-full h-full object-cover" /></div>
+        <div class="mosaic-item rounded-2xl bg-primary/5 border border-dashed border-primary/20 flex items-center justify-center aspect-square">
+          <span class="text-primary/60 text-xs font-bold uppercase tracking-wide text-center px-2">+ modelos no acervo completo</span>
         </div>
-
-        <div class="group rounded-xl overflow-hidden border border-primary/10 bg-white shadow-sm">
-          <div class="aspect-square overflow-hidden"><img src="images/catalogo/nossa-senhora-aparecida.jpg" alt="Risco de bordado de Nossa Senhora Aparecida com coroa e manto azul" loading="lazy" class="w-full h-full object-cover" /></div>
-          <p class="text-[12px] sm:text-[13px] font-semibold text-center px-2 py-3 leading-snug">Nossa Senhora Aparecida</p>
-        </div>
-
-        <div class="group rounded-xl overflow-hidden border border-primary/10 bg-white shadow-sm">
-          <div class="aspect-square overflow-hidden"><img src="images/catalogo/cogumelos-na-chuva.jpg" alt="Risco de bordado de cogumelos na chuva com nuvem e flores" loading="lazy" class="w-full h-full object-cover" /></div>
-          <p class="text-[12px] sm:text-[13px] font-semibold text-center px-2 py-3 leading-snug">Cogumelos na Chuva</p>
-        </div>
-
-        <div class="group rounded-xl overflow-hidden border border-primary/10 bg-white shadow-sm">
-          <div class="aspect-square overflow-hidden"><img src="images/catalogo/galo-carijo-amanhecer.jpg" alt="Risco de bordado de galo carijó ao amanhecer com sol e flores" loading="lazy" class="w-full h-full object-cover" /></div>
-          <p class="text-[12px] sm:text-[13px] font-semibold text-center px-2 py-3 leading-snug">Galo Carijó ao Amanhecer</p>
-        </div>
-
-        <div class="group rounded-xl overflow-hidden border border-primary/10 bg-white shadow-sm">
-          <div class="aspect-square overflow-hidden"><img src="images/catalogo/xicaras-de-cafe.jpg" alt="Risco de bordado de xícaras de café floridas" loading="lazy" class="w-full h-full object-cover" /></div>
-          <p class="text-[12px] sm:text-[13px] font-semibold text-center px-2 py-3 leading-snug">Xícaras de Café</p>
-        </div>
-
-        <div class="group rounded-xl overflow-hidden border border-primary/10 bg-white shadow-sm">
-          <div class="aspect-square overflow-hidden"><img src="images/catalogo/colmeia-abelhinhas.jpg" alt="Risco de bordado de colmeia com abelhinhas e flores" loading="lazy" class="w-full h-full object-cover" /></div>
-          <p class="text-[12px] sm:text-[13px] font-semibold text-center px-2 py-3 leading-snug">Colmeia e Abelhinhas</p>
-        </div>
-
-        <div class="group rounded-xl overflow-hidden border border-primary/10 bg-white shadow-sm">
-          <div class="aspect-square overflow-hidden"><img src="images/catalogo/casa-feliz-panela-fogo.jpg" alt="Risco de bordado com panela no fogo e frase Casa Feliz, Panela no Fogo" loading="lazy" class="w-full h-full object-cover" /></div>
-          <p class="text-[12px] sm:text-[13px] font-semibold text-center px-2 py-3 leading-snug">"Casa Feliz, Panela no Fogo"</p>
-        </div>
-
-        <div class="group rounded-xl overflow-hidden border border-primary/10 bg-white shadow-sm">
-          <div class="aspect-square overflow-hidden"><img src="images/catalogo/vasinho-manjericao.jpg" alt="Risco de bordado de vasinho de manjericão floral" loading="lazy" class="w-full h-full object-cover" /></div>
-          <p class="text-[12px] sm:text-[13px] font-semibold text-center px-2 py-3 leading-snug">Vasinho de Manjericão</p>
-        </div>
-
-        <div class="group rounded-xl overflow-hidden border border-primary/10 bg-white shadow-sm">
-          <div class="aspect-square overflow-hidden"><img src="images/catalogo/peixinhos-aquario.jpg" alt="Risco de bordado de peixinhos dourados em aquário" loading="lazy" class="w-full h-full object-cover" /></div>
-          <p class="text-[12px] sm:text-[13px] font-semibold text-center px-2 py-3 leading-snug">Peixinhos no Aquário</p>
-        </div>
-
       </div>
+
       <div class="text-center mt-10">
-        <a href="https://pay.wiapy.com/EUBE-WpYBlrX" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 bg-accent hover:bg-[#586341] text-white font-sans font-bold text-sm uppercase tracking-wide px-7 py-3.5 rounded-full transition-colors">
-          Ver o Acervo Completo
+        <a href="#oferta" class="inline-flex items-center gap-2 bg-accent hover:bg-[#586341] text-white font-sans font-bold text-sm uppercase tracking-wide px-7 py-3.5 rounded-full transition-colors">
+          Ver Planos e Preços
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4"><path d="m9 18 6-6-6-6"/></svg>
         </a>
       </div>
     </div>
   </section>
 
-    <!-- ===================== PROBLEMA ===================== -->
-  <section class="w-full px-5 lg:px-10 py-16 lg:py-24">
+  <!-- ===================== 3. PROBLEMA → SOLUÇÃO ===================== -->
+  <section id="problema" class="w-full px-5 lg:px-10 py-16 lg:py-24">
     <div class="max-w-4xl mx-auto text-center">
-      <h2 class="font-serif font-bold text-primary text-3xl sm:text-4xl leading-tight mb-5">Sua Ideia de Bordado Não Precisa Parar na Falta de um Risco Bonito</h2>
-      <p class="text-sm md:text-base text-ink/70 leading-relaxed max-w-2xl mx-auto mb-12">
-        Muitas mulheres querem criar panos de prato lindos, mas perdem tempo procurando modelos na internet, encontram desenhos ruins ou não sabem desenhar. Entendemos a frustração de querer produzir e acabar esbarrando em:
+      <h2 class="font-serif font-bold text-primary text-[1.85rem] sm:text-4xl lg:text-5xl leading-[1.12] mb-8">Pare de Procurar um Risco do Zero a Cada Nova Encomenda</h2>
+
+      <div class="bg-white border border-primary/10 rounded-2xl px-5 py-4 mb-10 max-w-md mx-auto shadow-sm">
+        <p class="text-base text-ink/80 italic">"Oi, você tem algum modelo com flores para pano de prato?"</p>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+        <div class="rounded-2xl border border-primary/15 px-6 py-8">
+          <span class="inline-block bg-primary/10 text-primary text-[11px] font-bold uppercase tracking-wide px-3 py-1 rounded-full mb-5">Antes</span>
+          <ul class="space-y-3 text-base text-ink/60 text-left">
+            <li>Cliente pede um tema</li>
+            <li class="text-accent/50">↓</li>
+            <li>Você abre Pinterest / Google</li>
+            <li class="text-accent/50">↓</li>
+            <li>Procura referências</li>
+            <li class="text-accent/50">↓</li>
+            <li>Salva várias imagens</li>
+            <li class="text-accent/50">↓</li>
+            <li>Perde tempo</li>
+          </ul>
+        </div>
+        <div class="rounded-2xl border-2 border-accent bg-accent/5 px-6 py-8">
+          <span class="inline-block bg-accent text-white text-[11px] font-bold uppercase tracking-wide px-3 py-1 rounded-full mb-5">Com Sua Biblioteca</span>
+          <ul class="space-y-3 text-base text-ink/85 font-medium text-left">
+            <li>Cliente pede um tema</li>
+            <li class="text-accent">↓</li>
+            <li>Você abre seu acervo</li>
+            <li class="text-accent">↓</li>
+            <li>Encontra opções</li>
+            <li class="text-accent">↓</li>
+            <li>Mostra à cliente</li>
+            <li class="text-accent">↓</li>
+            <li>Começa a produzir</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== 4. COMO FUNCIONA ===================== -->
+  <section id="como-funciona" class="w-full px-5 lg:px-10 py-16 lg:py-24 bg-white/60">
+    <div class="max-w-6xl mx-auto">
+      <div class="text-center max-w-xl mx-auto mb-12">
+        <p class="font-sans text-xs sm:text-sm font-bold uppercase tracking-[0.18em] text-accent mb-3">Simples do início ao fim</p>
+        <h2 class="font-serif font-bold text-primary text-[1.85rem] sm:text-4xl lg:text-5xl leading-[1.12]">Como Funciona</h2>
+      </div>
+
+      <div class="flex flex-col lg:flex-row items-center justify-center gap-3 lg:gap-2 mb-14 max-w-5xl mx-auto">
+        <div class="bg-white border border-primary/10 rounded-2xl px-5 py-4 text-center shadow-sm w-full lg:w-auto lg:flex-1">
+          <span class="font-serif font-bold text-primary text-sm sm:text-base">Cliente Pediu</span>
+        </div>
+        <svg class="flow-arrow flow-arrow-v w-5 h-5 shrink-0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M19 12l-7 7-7-7"/></svg>
+        <svg class="flow-arrow flow-arrow-h w-5 h-5 shrink-0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        <div class="bg-white border border-primary/10 rounded-2xl px-5 py-4 text-center shadow-sm w-full lg:w-auto lg:flex-1">
+          <span class="font-serif font-bold text-primary text-sm sm:text-base">Encontre</span>
+        </div>
+        <svg class="flow-arrow flow-arrow-v w-5 h-5 shrink-0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M19 12l-7 7-7-7"/></svg>
+        <svg class="flow-arrow flow-arrow-h w-5 h-5 shrink-0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        <div class="bg-white border border-primary/10 rounded-2xl px-5 py-4 text-center shadow-sm w-full lg:w-auto lg:flex-1">
+          <span class="font-serif font-bold text-primary text-sm sm:text-base">Mostre</span>
+        </div>
+        <svg class="flow-arrow flow-arrow-v w-5 h-5 shrink-0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M19 12l-7 7-7-7"/></svg>
+        <svg class="flow-arrow flow-arrow-h w-5 h-5 shrink-0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        <div class="bg-white border border-primary/10 rounded-2xl px-5 py-4 text-center shadow-sm w-full lg:w-auto lg:flex-1">
+          <span class="font-serif font-bold text-primary text-sm sm:text-base">Imprima</span>
+        </div>
+        <svg class="flow-arrow flow-arrow-v w-5 h-5 shrink-0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M19 12l-7 7-7-7"/></svg>
+        <svg class="flow-arrow flow-arrow-h w-5 h-5 shrink-0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        <div class="bg-primary border border-primary rounded-2xl px-5 py-4 text-center shadow-sm w-full lg:w-auto lg:flex-1">
+          <span class="font-serif font-bold text-white text-sm sm:text-base">Borde</span>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-5 lg:gap-6">
+        <div class="bg-white rounded-2xl border border-primary/10 shadow-sm px-5 py-7 text-center flex flex-col items-center">
+          <div class="w-12 h-12 rounded-full bg-accent/10 text-accent flex items-center justify-center font-serif font-bold text-lg mb-4">1</div>
+          <h3 class="font-serif font-bold text-primary text-lg mb-2">Encontre</h3>
+          <p class="text-sm sm:text-base text-ink/70 leading-relaxed">Abra sua Biblioteca.</p>
+        </div>
+        <div class="bg-white rounded-2xl border border-primary/10 shadow-sm px-5 py-7 text-center flex flex-col items-center">
+          <div class="w-12 h-12 rounded-full bg-accent/10 text-accent flex items-center justify-center font-serif font-bold text-lg mb-4">2</div>
+          <h3 class="font-serif font-bold text-primary text-lg mb-2">Mostre</h3>
+          <p class="text-sm sm:text-base text-ink/70 leading-relaxed">Apresente as opções para a cliente.</p>
+        </div>
+        <div class="bg-white rounded-2xl border border-primary/10 shadow-sm px-5 py-7 text-center flex flex-col items-center">
+          <div class="w-12 h-12 rounded-full bg-accent/10 text-accent flex items-center justify-center font-serif font-bold text-lg mb-4">3</div>
+          <h3 class="font-serif font-bold text-primary text-lg mb-2">Imprima</h3>
+          <p class="text-sm sm:text-base text-ink/70 leading-relaxed">Prepare o risco escolhido.</p>
+        </div>
+        <div class="bg-white rounded-2xl border border-primary/10 shadow-sm px-5 py-7 text-center flex flex-col items-center">
+          <div class="w-12 h-12 rounded-full bg-accent/10 text-accent flex items-center justify-center font-serif font-bold text-lg mb-4">4</div>
+          <h3 class="font-serif font-bold text-primary text-lg mb-2">Borde</h3>
+          <p class="text-sm sm:text-base text-ink/70 leading-relaxed">Comece sua encomenda.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== 5. VÍDEO: IMPRIMIR DIRETO NO TECIDO ===================== -->
+  <!--
+    TODO (produto): gravar o vídeo real de passo a passo de impressão direto no tecido.
+    Quando estiver pronto, substituir o bloco "placeholder" abaixo por um <video> ou embed real,
+    seguindo o mesmo padrão usado na seção de prova social / mostruário (sempre com assets reais).
+    Sugestão de arquivo: video/impressao-tecido.mp4 (ainda não existe no projeto).
+  -->
+  <section id="video" class="w-full px-5 lg:px-10 py-16 lg:py-24">
+    <div class="max-w-3xl mx-auto flex flex-col items-center text-center">
+      <p class="font-sans text-xs sm:text-sm font-bold uppercase tracking-[0.18em] text-accent mb-3">Passo a Passo em Vídeo</p>
+      <h2 class="font-serif font-bold text-primary text-[1.85rem] sm:text-4xl lg:text-5xl leading-[1.12] mb-5">Aprenda a Imprimir o Desenho Direto no Tecido</h2>
+      <p class="text-base sm:text-lg text-ink/70 leading-relaxed max-w-xl mb-10">
+        Você recebe um vídeo passo a passo mostrando como preparar e imprimir o desenho diretamente no
+        tecido, deixando sua produção ainda mais prática.
       </p>
 
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-        <div class="bg-white rounded-2xl border border-primary/10 shadow-sm px-5 py-7 text-center">
-          <div class="w-11 h-11 rounded-full bg-primary/10 text-primary flex items-center justify-center mx-auto mb-4">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+      <div class="w-full max-w-2xl rounded-2xl border-2 border-dashed border-primary/25 badge-soon px-6 py-14 sm:py-16 flex flex-col items-center gap-5">
+        <div class="flex items-center gap-4 text-primary/50">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="w-9 h-9"><path d="M6 9V2h12v7M6 18h12v4H6zM4 9h16a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2h-2v-4H6v4H4a2 2 0 0 1-2-2v-6a2 2 0 0 1 2-2Z"/></svg>
+          <div class="w-14 h-14 rounded-full border-2 border-primary/30 flex items-center justify-center shrink-0">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6 text-primary/40 ml-0.5"><path d="M8 5v14l11-7z"/></svg>
           </div>
-          <h3 class="font-serif font-bold text-primary text-base mb-2">Riscos difíceis de encontrar</h3>
-          <p class="text-xs text-ink/65 leading-relaxed">Perder horas buscando sem achar o traço ideal para o seu projeto.</p>
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="w-9 h-9"><path d="M2 12c2-4 4 4 6 0s4 4 6 0 4 4 6 0"/></svg>
         </div>
-        <div class="bg-white rounded-2xl border border-primary/10 shadow-sm px-5 py-7 text-center">
-          <div class="w-11 h-11 rounded-full bg-primary/10 text-primary flex items-center justify-center mx-auto mb-4">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="m21 15-5-5L5 21"/><path d="M3 3l18 18"/></svg>
-          </div>
-          <h3 class="font-serif font-bold text-primary text-base mb-2">Desenhos ruins ou sem qualidade</h3>
-          <p class="text-xs text-ink/65 leading-relaxed">Imagens embaçadas que dificultam a transferência para o tecido.</p>
-        </div>
-        <div class="bg-white rounded-2xl border border-primary/10 shadow-sm px-5 py-7 text-center">
-          <div class="w-11 h-11 rounded-full bg-primary/10 text-primary flex items-center justify-center mx-auto mb-4">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5"><path d="M12 3v18M3 12h18" opacity="0"/><rect x="3" y="8" width="8" height="13" rx="1"/><rect x="13" y="3" width="8" height="18" rx="1"/></svg>
-          </div>
-          <h3 class="font-serif font-bold text-primary text-base mb-2">Pouca variedade para encomendas</h3>
-          <p class="text-xs text-ink/65 leading-relaxed">Não ter um catálogo atrativo para oferecer às clientes.</p>
-        </div>
-        <div class="bg-white rounded-2xl border border-primary/10 shadow-sm px-5 py-7 text-center">
-          <div class="w-11 h-11 rounded-full bg-primary/10 text-primary flex items-center justify-center mx-auto mb-4">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg>
-          </div>
-          <h3 class="font-serif font-bold text-primary text-base mb-2">Medo de errar na composição</h3>
-          <p class="text-xs text-ink/65 leading-relaxed">A insegurança de desenhar do zero e acabar estragando o tecido.</p>
-        </div>
+        <span class="bg-primary/10 text-primary text-[11px] font-bold uppercase tracking-wide px-3 py-1.5 rounded-full">Vídeo em produção</span>
       </div>
+
+      <a href="#oferta" class="text-sm font-semibold text-primary hover:text-primary-hover underline underline-offset-4 transition-colors mt-8">Ver planos e preços</a>
     </div>
   </section>
 
-<!-- ===================== MÉTODO ===================== -->
-  <section id="metodo" class="w-full px-5 lg:px-10 py-16 lg:py-24 bg-white/60">
-    <div class="max-w-6xl mx-auto">
-      <div class="text-center max-w-xl mx-auto mb-12 lg:mb-16">
-        <p class="font-sans text-xs font-bold uppercase tracking-[0.18em] text-accent mb-3">Simples do início ao fim</p>
-        <h2 class="font-serif font-bold text-primary text-3xl sm:text-4xl leading-tight">Como Funciona</h2>
-      </div>
-      <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 lg:gap-8">
-        <div class="bg-white rounded-2xl border border-primary/10 shadow-sm px-6 py-8 text-center flex flex-col items-center">
-          <div class="w-12 h-12 rounded-full bg-accent/10 text-accent flex items-center justify-center font-serif font-bold text-lg mb-5">1</div>
-          <h3 class="font-serif font-bold text-primary text-lg mb-3">Baixe Seus Riscos</h3>
-          <p class="text-sm text-ink/70 leading-relaxed">Receba o material completo no seu e-mail assim que a compra for confirmada, pronto para usar.</p>
-        </div>
-        <div class="bg-white rounded-2xl border border-primary/10 shadow-sm px-6 py-8 text-center flex flex-col items-center">
-          <div class="w-12 h-12 rounded-full bg-accent/10 text-accent flex items-center justify-center font-serif font-bold text-lg mb-5">2</div>
-          <h3 class="font-serif font-bold text-primary text-lg mb-3">Transfira para o Tecido</h3>
-          <p class="text-sm text-ink/70 leading-relaxed">Use papel carbono, decalque ou a técnica que preferir para passar o risco direto no pano.</p>
-        </div>
-        <div class="bg-white rounded-2xl border border-primary/10 shadow-sm px-6 py-8 text-center flex flex-col items-center">
-          <div class="w-12 h-12 rounded-full bg-accent/10 text-accent flex items-center justify-center font-serif font-bold text-lg mb-5">3</div>
-          <h3 class="font-serif font-bold text-primary text-lg mb-3">Borde no Seu Ritmo</h3>
-          <p class="text-sm text-ink/70 leading-relaxed">Siga os traços prontos e borde no seu ritmo, sem se preocupar em desenhar nada do zero.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-    <!-- ===================== INSPIRAÇÃO ===================== -->
-  <section class="w-full px-5 lg:px-10 py-16 lg:py-24 bg-white/60">
-    <div class="max-w-6xl mx-auto">
-      <div class="text-center max-w-xl mx-auto mb-12 lg:mb-16">
-        <h2 class="font-serif font-bold text-primary text-3xl sm:text-4xl leading-tight mb-4">Mais Inspiração, Mais Praticidade e <span class="italic text-accent font-semibold">Panos Cheios de Charme</span></h2>
-        <p class="text-sm md:text-base text-ink/70 leading-relaxed">Cada risco foi desenhado com traços limpos para garantir que o seu bordado fique delicado e sem complicação.</p>
-      </div>
-      <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 lg:gap-8">
-        <div class="bg-bg rounded-2xl border border-primary/10 px-6 py-8">
-          <div class="w-11 h-11 rounded-full bg-accent/10 text-accent flex items-center justify-center mb-5">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5"><path d="M15.707 21.293a1 1 0 0 1-1.414 0l-1.586-1.586a1 1 0 0 1 0-1.414l5.586-5.586a1 1 0 0 1 1.414 0l1.586 1.586a1 1 0 0 1 0 1.414z"/><path d="m18 13-1.375-6.874a1 1 0 0 0-.746-.776L3.235 2.028a1 1 0 0 0-1.207 1.207L5.35 15.879a1 1 0 0 0 .776.746L13 18"/></svg>
-          </div>
-          <h3 class="font-serif font-bold text-primary text-lg mb-3">Borde com Mais Facilidade</h3>
-          <p class="text-sm text-ink/70 leading-relaxed">Esqueça a dificuldade de tentar desenhar frutas, flores ou letras do zero. Você escolhe o modelo favorito, imprime do tamanho que precisar e transfere para o tecido.</p>
-        </div>
-        <div class="bg-bg rounded-2xl border border-primary/10 px-6 py-8">
-          <div class="w-11 h-11 rounded-full bg-accent/10 text-accent flex items-center justify-center mb-5">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5"><path d="M12 21s-7-4.5-9.5-9C1 8 3 5 6 5c2 0 3.5 1 4 2 .5-1 2-2 4-2 3 0 5 3 3.5 7C19 16.5 12 21 12 21Z"/></svg>
-          </div>
-          <h3 class="font-serif font-bold text-primary text-lg mb-3">Crie Peças com Charme</h3>
-          <p class="text-sm text-ink/70 leading-relaxed">Faça presentes afetuosos e cheios de carinho. Os riscos são ideais para panos de prato, jogos americanos e quadros em bastidor para decorar a cozinha ou presentear.</p>
-        </div>
-        <div class="bg-bg rounded-2xl border border-primary/10 px-6 py-8">
-          <div class="w-11 h-11 rounded-full bg-accent/10 text-accent flex items-center justify-center mb-5">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5"><path d="M3 9h18M3 15h18M8 3 6 21M18 3l-2 18"/></svg>
-          </div>
-          <h3 class="font-serif font-bold text-primary text-lg mb-3">Tenha Mais Modelos para Vender</h3>
-          <p class="text-sm text-ink/70 leading-relaxed">Monte seu portfólio físico com panos e toalhas muito pedidos para chás de casa nova, aniversários ou datas especiais.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ===================== RENDA EXTRA ===================== -->
-  <section class="w-full px-5 lg:px-10 py-16 lg:py-24 bg-white/60">
-    <div class="max-w-5xl mx-auto">
-      <div class="text-center max-w-2xl mx-auto mb-12 lg:mb-16">
-        <p class="font-sans text-xs font-bold uppercase tracking-[0.18em] text-accent mb-3">Também dá pra vender</p>
-        <h2 class="font-serif font-bold text-primary text-3xl sm:text-4xl leading-tight mb-4">Dá pra Transformar Bordado em <span class="italic text-accent font-semibold">Renda Extra</span></h2>
-        <p class="text-sm md:text-base text-ink/70 leading-relaxed">Peças bordadas à mão têm alta procura por serem exclusivas e cheias de capricho, o que abre espaço pra vender em feiras, redes sociais ou por encomenda.</p>
-      </div>
-
-      <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 lg:gap-8 mb-10">
-        <div class="bg-bg rounded-2xl border border-primary/10 px-6 py-8 text-center">
-          <div class="w-11 h-11 rounded-full bg-accent/10 text-accent flex items-center justify-center mx-auto mb-5">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
-          </div>
-          <h3 class="font-serif font-bold text-primary text-lg mb-2">Baixo Investimento</h3>
-          <p class="text-sm text-ink/70 leading-relaxed">Um pano de prato liso custa poucos reais. Com um risco bonito e algumas horas de bordado, a peça ganha muito mais valor.</p>
-        </div>
-        <div class="bg-bg rounded-2xl border border-primary/10 px-6 py-8 text-center">
-          <div class="w-11 h-11 rounded-full bg-accent/10 text-accent flex items-center justify-center mx-auto mb-5">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
-          </div>
-          <h3 class="font-serif font-bold text-primary text-lg mb-2">Preço de Mercado</h3>
-          <p class="text-sm text-ink/70 leading-relaxed">Panos de prato, jogos americanos e toalhas bordadas costumam ser vendidos entre R$25 e R$60, dependendo do capricho e do tecido.</p>
-        </div>
-        <div class="bg-bg rounded-2xl border border-primary/10 px-6 py-8 text-center">
-          <div class="w-11 h-11 rounded-full bg-accent/10 text-accent flex items-center justify-center mx-auto mb-5">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5"><circle cx="12" cy="12" r="10"/><path d="M8 12h8M12 8v8"/></svg>
-          </div>
-          <h3 class="font-serif font-bold text-primary text-lg mb-2">Onde Vender</h3>
-          <p class="text-sm text-ink/70 leading-relaxed">Feiras de artesanato, Instagram, grupos de bairro e encomendas para chá de casa nova, batizados e datas especiais.</p>
-        </div>
-      </div>
-
-      <div class="flex flex-col items-center text-center bg-primary rounded-[1.75rem] px-6 py-10 sm:px-10">
-        <p class="text-white/85 text-sm sm:text-base leading-relaxed max-w-xl mb-6">Com 100 riscos prontos no acervo, você nunca fica sem novidade pra oferecer às suas clientes, seja bordando por hobby ou vendendo peça por peça.</p>
-        <a href="#oferta" class="cta-btn inline-flex items-center justify-center gap-3 bg-white text-primary hover:bg-white/90 font-sans font-bold text-sm uppercase tracking-wide px-8 py-4 rounded-full shadow-lg transition-colors">
-          Quero Meus Riscos
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-        </a>
-      </div>
-    </div>
-  </section>
-
-  <!-- ===================== IDEAL PARA VOCÊ ===================== -->
-  <section class="w-full px-5 lg:px-10 py-16 lg:py-24">
-    <div class="max-w-5xl mx-auto text-center">
-      <h2 class="font-serif font-bold text-primary text-3xl sm:text-4xl leading-tight mb-12 lg:mb-16">Esse Material é Ideal <span class="italic text-accent font-semibold">Para Você Que...</span></h2>
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 text-left">
-        <div class="flex items-start gap-3 bg-white border border-primary/10 rounded-xl px-5 py-5">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 text-accent shrink-0 mt-0.5"><path d="M12 8a2.5 2.5 0 0 0-2.5 2.5c0 1.5 1 2 2 3l.5.5.5-.5c1-1 2-1.5 2-3A2.5 2.5 0 0 0 12 8Z"/><circle cx="12" cy="12" r="10"/></svg>
-          <div>
-            <h3 class="font-serif font-bold text-primary text-[15px] mb-1">Borda por Hobby</h3>
-            <p class="text-xs text-ink/65 leading-relaxed">e deseja modelos bonitos e prontos para relaxar bordando.</p>
-          </div>
-        </div>
-        <div class="flex items-start gap-3 bg-white border border-primary/10 rounded-xl px-5 py-5">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 text-accent shrink-0 mt-0.5"><path d="M20 12v6a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-6M2 7h20v5H2z"/><path d="M12 22V7M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7ZM12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7Z"/></svg>
-          <div>
-            <h3 class="font-serif font-bold text-primary text-[15px] mb-1">Quer Fazer Presentes</h3>
-            <p class="text-xs text-ink/65 leading-relaxed">personalizados com afeto e carinho para o dia a dia.</p>
-          </div>
-        </div>
-        <div class="flex items-start gap-3 bg-white border border-primary/10 rounded-xl px-5 py-5">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 text-accent shrink-0 mt-0.5"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18M16 10a4 4 0 0 1-8 0"/></svg>
-          <div>
-            <h3 class="font-serif font-bold text-primary text-[15px] mb-1">Faz Encomendas</h3>
-            <p class="text-xs text-ink/65 leading-relaxed">e precisa de variedade no portfólio para atender clientes.</p>
-          </div>
-        </div>
-        <div class="flex items-start gap-3 bg-white border border-primary/10 rounded-xl px-5 py-5">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 text-accent shrink-0 mt-0.5"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/></svg>
-          <div>
-            <h3 class="font-serif font-bold text-primary text-[15px] mb-1">É Iniciante</h3>
-            <p class="text-xs text-ink/65 leading-relaxed">e deseja começar com um risco bonito, mesmo sem saber desenhar.</p>
-          </div>
-        </div>
-        <div class="flex items-start gap-3 bg-white border border-primary/10 rounded-xl px-5 py-5 sm:col-span-2 lg:col-span-1">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 text-accent shrink-0 mt-0.5"><rect x="3" y="8" width="18" height="4" rx="1"/><path d="M12 8v13M19 12v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7"/><path d="M7.5 8a2.5 2.5 0 0 1 0-5C11 3 12 8 12 8ZM16.5 8a2.5 2.5 0 0 0 0-5C13 3 12 8 12 8Z"/></svg>
-          <div>
-            <h3 class="font-serif font-bold text-primary text-[15px] mb-1">Cria Peças para Datas Especiais</h3>
-            <p class="text-xs text-ink/65 leading-relaxed">precisando de modelos como frutas, flores e frases para presentear.</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ===================== PARA QUEM NÃO É ===================== -->
-  <section class="w-full px-5 lg:px-10 py-16 lg:py-24 bg-white/60">
-    <div class="max-w-3xl mx-auto">
-      <div class="bg-bg border border-primary/10 rounded-[1.75rem] px-6 py-9 sm:px-10 sm:py-11">
-        <div class="flex items-start gap-4 mb-7">
-          <div class="w-11 h-11 rounded-full bg-primary/10 text-primary flex items-center justify-center shrink-0">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5"><circle cx="12" cy="12" r="10"/><path d="M12 8v5M12 16h.01"/></svg>
-          </div>
-          <div>
-            <h2 class="font-serif font-bold text-primary text-xl sm:text-2xl leading-tight">Para Quem <em class="italic text-accent">NÃO</em> é Esse Material?</h2>
-            <p class="text-sm text-ink/65 mt-1">Valorizamos a transparência. Para que você faça a escolha certa, saiba que este acervo:</p>
-          </div>
-        </div>
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
-          <div class="flex items-start gap-3">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 text-primary shrink-0 mt-1"><path d="M18 6 6 18M6 6l12 12"/></svg>
-            <p class="text-sm text-ink/80"><strong class="font-semibold text-ink">Não é matriz para máquina:</strong> são riscos em PDF para serem bordados livremente à mão.</p>
-          </div>
-          <div class="flex items-start gap-3">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 text-primary shrink-0 mt-1"><path d="M18 6 6 18M6 6l12 12"/></svg>
-            <p class="text-sm text-ink/80"><strong class="font-semibold text-ink">Não é um produto físico:</strong> você recebe o PDF por e-mail, sem envio pelos Correios.</p>
-          </div>
-          <div class="flex items-start gap-3">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 text-primary shrink-0 mt-1"><path d="M18 6 6 18M6 6l12 12"/></svg>
-            <p class="text-sm text-ink/80"><strong class="font-semibold text-ink">Não ensina a bordar:</strong> o material não inclui aulas de pontos, é a coletânea dos modelos.</p>
-          </div>
-          <div class="flex items-start gap-3">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 text-primary shrink-0 mt-1"><path d="M18 6 6 18M6 6l12 12"/></svg>
-            <p class="text-sm text-ink/80"><strong class="font-semibold text-ink">Não pode ser revendido:</strong> venda as peças que bordar à vontade, mas o PDF é de uso pessoal.</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ===================== BÔNUS ===================== -->
-  <section class="w-full px-5 lg:px-10 py-16 lg:py-20">
-    <div class="max-w-4xl mx-auto text-center">
-      <p class="font-sans text-xs font-bold uppercase tracking-[0.18em] text-accent mb-3">Presentes exclusivos</p>
-      <h2 class="font-serif font-bold text-primary text-2xl sm:text-3xl leading-tight mb-10">E o Plano Completo Ainda Vem com <span class="italic text-accent font-semibold">Bônus Exclusivos</span></h2>
-
-      <div class="grid grid-cols-1 sm:grid-cols-3 gap-5 text-left">
-        <div class="flex flex-col gap-4 bg-white border border-primary/10 rounded-2xl px-6 py-7 shadow-sm">
-          <div class="w-12 h-12 rounded-xl bg-accent/10 text-accent flex items-center justify-center shrink-0">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6"><path d="M12 15V3"/><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/></svg>
-          </div>
-          <div>
-            <span class="inline-block bg-accent/15 text-accent text-[10px] font-bold uppercase tracking-wide px-3 py-1 rounded-full mb-2">Bônus 1</span>
-            <h3 class="font-serif font-bold text-primary text-base mb-2">Guia Rápido de Técnicas de Transferência</h3>
-            <p class="text-sm text-ink/70 leading-relaxed">O passo a passo para transferir seus riscos em diversas cores e tipos de tecido, sem manchar.</p>
-          </div>
-        </div>
-
-        <div class="flex flex-col gap-4 bg-white border border-primary/10 rounded-2xl px-6 py-7 shadow-sm">
-          <div class="w-12 h-12 rounded-xl bg-accent/10 text-accent flex items-center justify-center shrink-0">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6"><path d="M12.6 2.6a2 2 0 0 0-1.4-.6H4a2 2 0 0 0-2 2v7.2a2 2 0 0 0 .6 1.4l8.7 8.7a2.4 2.4 0 0 0 3.4 0l6.6-6.6a2.4 2.4 0 0 0 0-3.4Z"/><circle cx="7.5" cy="7.5" r=".6" fill="currentColor" stroke="none"/></svg>
-          </div>
-          <div>
-            <span class="inline-block bg-accent/15 text-accent text-[10px] font-bold uppercase tracking-wide px-3 py-1 rounded-full mb-2">Bônus 2</span>
-            <h3 class="font-serif font-bold text-primary text-base mb-2">Pack de Etiquetas para Presentes</h3>
-            <p class="text-sm text-ink/70 leading-relaxed">Artes prontas para imprimir e usar como tags nas suas encomendas ou presentes com as peças bordadas.</p>
-          </div>
-        </div>
-
-        <div class="flex flex-col gap-4 bg-white border border-primary/10 rounded-2xl px-6 py-7 shadow-sm">
-          <div class="w-12 h-12 rounded-xl bg-accent/10 text-accent flex items-center justify-center shrink-0">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18M16 10a4 4 0 0 1-8 0"/></svg>
-          </div>
-          <div>
-            <span class="inline-block bg-accent/15 text-accent text-[10px] font-bold uppercase tracking-wide px-3 py-1 rounded-full mb-2">Bônus 3</span>
-            <h3 class="font-serif font-bold text-primary text-base mb-2">Curadoria de Fornecedores em Conta</h3>
-            <p class="text-sm text-ink/70 leading-relaxed">Uma lista com indicações de onde comprar linhas, tecidos e bastidores de qualidade sem gastar muito.</p>
-          </div>
-        </div>
-      </div>
-
-      <div class="flex items-center justify-center gap-2.5 mt-6 bg-accent/10 border border-accent/20 rounded-full px-5 py-2.5 w-fit mx-auto">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 text-accent shrink-0"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
-        <span class="text-[12px] sm:text-[13px] font-semibold text-accent">Bônus de acesso vitalício: seu material reenviado por e-mail sempre que precisar, sem prazo de expiração.</span>
-      </div>
-    </div>
-  </section>
-
-<!-- ===================== OFERTA ===================== -->
+  <!-- ===================== 6. OFERTA / PLANOS ===================== -->
   <section id="oferta" class="w-full px-5 lg:px-10 py-16 lg:py-24">
-    <div class="max-w-4xl mx-auto">
+    <div class="max-w-5xl mx-auto">
       <div class="text-center max-w-xl mx-auto mb-12">
-        <p class="font-sans text-xs font-bold uppercase tracking-[0.18em] text-accent mb-3">Oferta especial</p>
-        <h2 class="font-serif font-bold text-primary text-3xl sm:text-4xl leading-tight">Escolha Seu Plano</h2>
+        <p class="font-sans text-xs sm:text-sm font-bold uppercase tracking-[0.18em] text-accent mb-3">Oferta especial</p>
+        <h2 class="font-serif font-bold text-primary text-[1.85rem] sm:text-4xl lg:text-5xl leading-[1.12] mb-4">Escolha Como Quer Começar</h2>
+        <p class="text-ink/70 text-base sm:text-lg leading-relaxed">Tenha seus modelos organizados e pare de começar uma busca do zero toda vez que uma cliente fizer um pedido.</p>
       </div>
 
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 lg:gap-8 items-stretch">
+      <div class="grid grid-cols-1 sm:grid-cols-[0.85fr_1.15fr] gap-6 lg:gap-8 items-stretch max-w-4xl mx-auto">
 
-        <!-- Plano Básico -->
-        <div class="rounded-[1.75rem] border border-primary/15 bg-white shadow-sm px-6 py-9 sm:px-8 sm:py-10 text-center flex flex-col">
-          <h3 class="font-serif font-bold text-primary text-xl mb-1">Plano Básico</h3>
-          <p class="font-sans text-xs uppercase tracking-wide text-ink/50 font-semibold mb-7">Só os riscos, sem bônus</p>
+        <!-- Plano Essencial -->
+        <div class="rounded-[1.75rem] border border-primary/15 bg-white shadow-sm px-6 py-8 sm:px-7 sm:py-9 text-center flex flex-col self-center">
+          <h3 class="font-serif font-bold text-primary text-lg mb-1">Biblioteca Essencial</h3>
+          <p class="font-sans text-[11px] uppercase tracking-wide text-ink/50 font-semibold mb-6">Para quem quer o acervo principal</p>
 
-          <div class="flex flex-col items-center mb-7">
+          <div class="flex flex-col items-center mb-6">
             <span class="text-ink/40 line-through text-sm font-sans">De R$47</span>
-            <span class="font-serif font-black text-primary text-4xl sm:text-5xl leading-none mt-1">Por R$10</span>
+            <span class="font-serif font-black text-primary text-4xl leading-none mt-1">R$10</span>
             <span class="text-xs text-ink/50 font-sans mt-2">pagamento único</span>
           </div>
 
-          <ul class="text-left space-y-3 mb-9 flex-1">
-            <li class="flex items-start gap-3">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 text-accent shrink-0 mt-0.5"><path d="M20 6 9 17l-5-5"/></svg>
-              <span class="text-sm text-ink/85">100 riscos em alta resolução, prontos para imprimir</span>
+          <ul class="text-left space-y-2.5 mb-8 flex-1 text-sm">
+            <li class="flex items-start gap-2.5">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 text-accent shrink-0 mt-0.5"><path d="M20 6 9 17l-5-5"/></svg>
+              <span class="text-ink/80">+100 modelos organizados</span>
             </li>
-            <li class="flex items-start gap-3">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 text-accent shrink-0 mt-0.5"><path d="M20 6 9 17l-5-5"/></svg>
-              <span class="text-sm text-ink/85">Arquivo em PDF, acesso imediato após a compra</span>
+            <li class="flex items-start gap-2.5">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 text-accent shrink-0 mt-0.5"><path d="M20 6 9 17l-5-5"/></svg>
+              <span class="text-ink/80">Arquivos digitais</span>
             </li>
-            <li class="flex items-start gap-3 opacity-40">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 shrink-0 mt-0.5"><path d="M18 6 6 18M6 6l12 12"/></svg>
-              <span class="text-sm text-ink/85">Bônus: guia rápido de técnicas de transferência</span>
+            <li class="flex items-start gap-2.5">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 text-accent shrink-0 mt-0.5"><path d="M20 6 9 17l-5-5"/></svg>
+              <span class="text-ink/80">Prontos para imprimir</span>
+            </li>
+            <li class="flex items-start gap-2.5">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 text-accent shrink-0 mt-0.5"><path d="M20 6 9 17l-5-5"/></svg>
+              <span class="text-ink/80">Acesso imediato</span>
             </li>
           </ul>
 
-          <button type="button" id="btn-basico" class="cta-btn inline-flex items-center justify-center gap-2 bg-white border-2 border-primary text-primary hover:bg-primary hover:text-white font-sans font-bold text-sm uppercase tracking-wide px-6 py-4 rounded-full transition-colors w-full">
-            Quero Só o Básico
+          <button type="button" id="btn-essencial" class="cta-btn inline-flex items-center justify-center gap-2 bg-white border-2 border-primary text-primary hover:bg-primary hover:text-white font-sans font-bold text-xs uppercase tracking-wide px-6 py-3.5 rounded-full transition-colors w-full">
+            Quero o Essencial
           </button>
         </div>
 
-        <!-- Plano Completo -->
-        <div class="relative rounded-[1.75rem] border-2 border-primary bg-white shadow-[0_30px_60px_-30px_rgba(122,59,46,0.4)] px-6 py-9 sm:px-8 sm:py-10 text-center flex flex-col">
-          <span class="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-accent text-white text-[10px] font-bold uppercase tracking-wide px-4 py-1.5 rounded-full whitespace-nowrap">Melhor Opção</span>
-          <h3 class="font-serif font-bold text-primary text-xl mb-1 mt-1">Plano Completo</h3>
-          <p class="font-sans text-xs uppercase tracking-wide text-accent font-semibold mb-7">Riscos + acesso vitalício + bônus</p>
+        <!-- Biblioteca Completa -->
+        <div class="relative rounded-[1.75rem] border-2 border-primary bg-white shadow-[0_30px_60px_-30px_rgba(122,59,46,0.4)] px-6 py-10 sm:px-9 sm:py-11 text-center flex flex-col">
+          <span class="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-accent text-white text-[10px] font-bold uppercase tracking-wide px-4 py-1.5 rounded-full whitespace-nowrap">Mais Escolhido</span>
+          <h3 class="font-serif font-bold text-primary text-2xl mb-1 mt-1">Biblioteca Completa</h3>
+          <p class="font-sans text-xs uppercase tracking-wide text-accent font-semibold mb-7">Para quem quer agilizar ainda mais suas encomendas</p>
 
-          <div class="flex flex-col items-center mb-7">
+          <div class="flex flex-col items-center mb-3">
             <span class="text-ink/40 line-through text-sm font-sans">De R$97</span>
-            <span class="font-serif font-black text-primary text-5xl sm:text-6xl leading-none mt-1">Por R$20</span>
+            <span class="font-serif font-black text-primary text-6xl leading-none mt-1">R$20</span>
             <span class="text-xs text-ink/50 font-sans mt-2">pagamento único, sem mensalidade</span>
           </div>
+          <p class="text-xs text-accent font-semibold mb-6">Por apenas R$10 a mais, leve também os materiais extras para facilitar ainda mais suas encomendas.</p>
 
-          <ul class="text-left space-y-3 mb-9 flex-1">
+          <ul class="text-left space-y-3 mb-6">
             <li class="flex items-start gap-3">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 text-accent shrink-0 mt-0.5"><path d="M20 6 9 17l-5-5"/></svg>
-              <span class="text-sm text-ink/85">100 riscos em alta resolução, prontos para imprimir</span>
+              <span class="text-sm text-ink/85"><strong class="font-semibold">Tudo da Biblioteca Essencial</strong></span>
             </li>
             <li class="flex items-start gap-3">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 text-accent shrink-0 mt-0.5"><path d="M20 6 9 17l-5-5"/></svg>
-              <span class="text-sm text-ink/85">Arquivo em PDF, acesso imediato após a compra</span>
+              <span class="text-sm text-ink/85">+100 modelos organizados, separados por categoria</span>
             </li>
             <li class="flex items-start gap-3">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 text-accent shrink-0 mt-0.5"><path d="M20 6 9 17l-5-5"/></svg>
-              <span class="text-sm text-ink/85">Riscos variados para pano de prato, jogo americano e quadros</span>
+              <span class="text-sm text-ink/85">Acesso imediato</span>
             </li>
             <li class="flex items-start gap-3">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 text-accent shrink-0 mt-0.5"><path d="M20 6 9 17l-5-5"/></svg>
-              <span class="text-sm text-ink/85"><strong class="font-semibold">Acesso vitalício:</strong> material reenviado por e-mail sempre que precisar</span>
-            </li>
-            <li class="flex items-start gap-3">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 text-accent shrink-0 mt-0.5"><path d="M20 6 9 17l-5-5"/></svg>
-              <span class="text-sm text-ink/85"><strong class="font-semibold">+3 bônus exclusivos:</strong> guia de transferência, etiquetas para presentes e curadoria de fornecedores</span>
+              <span class="text-sm text-ink/85"><strong class="font-semibold">Acesso vitalício:</strong> material reenviado sempre que precisar</span>
             </li>
           </ul>
 
-          <a href="https://pay.wiapy.com/EUBE-WpYBlrX" target="_blank" rel="noopener noreferrer" class="cta-btn inline-flex items-center justify-center gap-3 bg-primary hover:bg-primary-hover text-white font-sans font-bold text-sm uppercase tracking-wide px-6 py-4 rounded-full shadow-lg shadow-primary/20 transition-colors w-full">
-            Quero Meus Riscos
+          <!--
+            Bônus 01, 02, 03, 04 e 05 abaixo ainda NÃO existem como material entregável.
+            Mantidos na estrutura (com selo "Em breve") por decisão de produto, para já comunicar
+            o roadmap da Biblioteca Completa. NÃO remover o selo "Em breve" desses itens até o
+            material real (arquivo, vídeo ou coleção) existir de fato no projeto.
+            Bônus 06 (Guia de Transferência) já existe e é entregue desde já.
+          -->
+          <div class="grid grid-cols-1 gap-2 mb-8 text-left">
+            <div class="flex items-center gap-3 badge-soon border border-dashed border-primary/20 rounded-xl px-4 py-2.5">
+              <span class="text-base shrink-0">🎁</span>
+              <div class="flex-1">
+                <div class="flex items-center gap-2 flex-wrap">
+                  <span class="text-[9px] font-bold uppercase tracking-wide text-primary/60">Bônus 01</span>
+                  <span class="bg-primary/10 text-primary/60 text-[8px] font-bold uppercase tracking-wide px-2 py-0.5 rounded-full">Em breve</span>
+                </div>
+                <p class="text-xs text-ink/60 leading-snug font-semibold text-ink/70">Catálogo digital para mostrar às clientes</p>
+              </div>
+            </div>
+            <div class="flex items-center gap-3 badge-soon border border-dashed border-primary/20 rounded-xl px-4 py-2.5">
+              <span class="text-base shrink-0">🎥</span>
+              <div class="flex-1">
+                <div class="flex items-center gap-2 flex-wrap">
+                  <span class="text-[9px] font-bold uppercase tracking-wide text-primary/60">Bônus 02</span>
+                  <span class="bg-primary/10 text-primary/60 text-[8px] font-bold uppercase tracking-wide px-2 py-0.5 rounded-full">Em breve</span>
+                </div>
+                <p class="text-xs text-ink/60 leading-snug font-semibold text-ink/70">Vídeo: como imprimir o risco direto no tecido</p>
+              </div>
+            </div>
+            <div class="flex items-center gap-3 badge-soon border border-dashed border-primary/20 rounded-xl px-4 py-2.5">
+              <span class="text-base shrink-0">🎁</span>
+              <div class="flex-1">
+                <div class="flex items-center gap-2 flex-wrap">
+                  <span class="text-[9px] font-bold uppercase tracking-wide text-primary/60">Bônus 03</span>
+                  <span class="bg-primary/10 text-primary/60 text-[8px] font-bold uppercase tracking-wide px-2 py-0.5 rounded-full">Em breve</span>
+                </div>
+                <p class="text-xs text-ink/60 leading-snug font-semibold text-ink/70">Kit de alfabetos e monogramas</p>
+              </div>
+            </div>
+            <div class="flex items-center gap-3 badge-soon border border-dashed border-primary/20 rounded-xl px-4 py-2.5">
+              <span class="text-base shrink-0">🎁</span>
+              <div class="flex-1">
+                <div class="flex items-center gap-2 flex-wrap">
+                  <span class="text-[9px] font-bold uppercase tracking-wide text-primary/60">Bônus 04</span>
+                  <span class="bg-primary/10 text-primary/60 text-[8px] font-bold uppercase tracking-wide px-2 py-0.5 rounded-full">Em breve</span>
+                </div>
+                <p class="text-xs text-ink/60 leading-snug font-semibold text-ink/70">Coleção de riscos religiosos</p>
+              </div>
+            </div>
+            <div class="flex items-center gap-3 badge-soon border border-dashed border-primary/20 rounded-xl px-4 py-2.5">
+              <span class="text-base shrink-0">🎁</span>
+              <div class="flex-1">
+                <div class="flex items-center gap-2 flex-wrap">
+                  <span class="text-[9px] font-bold uppercase tracking-wide text-primary/60">Bônus 05</span>
+                  <span class="bg-primary/10 text-primary/60 text-[8px] font-bold uppercase tracking-wide px-2 py-0.5 rounded-full">Em breve</span>
+                </div>
+                <p class="text-xs text-ink/60 leading-snug font-semibold text-ink/70">Coleção de datas comemorativas</p>
+              </div>
+            </div>
+            <div class="flex items-center gap-3 bg-accent/5 border border-accent/15 rounded-xl px-4 py-2.5">
+              <span class="text-base shrink-0">✅</span>
+              <div class="flex-1">
+                <div class="flex items-center gap-2 flex-wrap">
+                  <span class="text-[9px] font-bold uppercase tracking-wide text-accent">Bônus 06</span>
+                  <span class="bg-accent/15 text-accent text-[8px] font-bold uppercase tracking-wide px-2 py-0.5 rounded-full">Disponível agora</span>
+                </div>
+                <p class="text-xs text-ink/85 leading-snug font-semibold">Guia de transferência para tecido</p>
+              </div>
+            </div>
+          </div>
+
+          <a href="#" data-checkout="completo" target="_blank" rel="noopener noreferrer" class="cta-btn inline-flex items-center justify-center gap-3 bg-primary hover:bg-primary-hover text-white font-sans font-bold text-sm uppercase tracking-wide px-6 py-4 rounded-full shadow-lg shadow-primary/20 transition-colors w-full">
+            Quero a Biblioteca Completa
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
           </a>
         </div>
@@ -649,12 +538,12 @@ src="https://www.facebook.com/tr?id=1096195466206984&ev=PageView&noscript=1"
 
       <div class="flex items-center justify-center gap-2.5 mt-10 bg-accent/10 border border-accent/20 rounded-full px-5 py-2.5 w-fit mx-auto">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 text-accent shrink-0"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></svg>
-        <span class="text-[12px] sm:text-[13px] font-semibold text-accent">Garantia incondicional de 7 dias. Se não gostar, devolvemos seu dinheiro sem perguntas.</span>
+        <span class="text-[13px] font-semibold text-accent">Garantia incondicional de 7 dias. Se não gostar, devolvemos seu dinheiro sem perguntas.</span>
       </div>
     </div>
   </section>
 
-  <!-- ===================== POPUP OFERTA (upsell ao clicar no Básico) ===================== -->
+  <!-- ===================== POPUP OFERTA (interceptação ao clicar no Essencial) ===================== -->
   <div id="upsell-modal" class="hidden fixed inset-0 z-[100] items-center justify-center px-4">
     <div id="upsell-backdrop" class="absolute inset-0 bg-ink/60 backdrop-blur-sm"></div>
     <div class="relative bg-bg w-full max-w-md rounded-[1.75rem] border border-primary/15 shadow-2xl px-6 py-9 sm:px-9 sm:py-10 text-center">
@@ -665,8 +554,8 @@ src="https://www.facebook.com/tr?id=1096195466206984&ev=PageView&noscript=1"
       <span class="inline-block bg-accent/15 text-accent text-[11px] font-bold uppercase tracking-wide px-4 py-1.5 rounded-full mb-5">Oferta única, só agora</span>
       <h3 class="font-serif font-bold text-primary text-2xl leading-tight mb-3">Espera, temos algo melhor pra você</h3>
       <p class="text-sm text-ink/75 leading-relaxed mb-6">
-        Antes de levar só o Básico, que tal o Plano Completo com todos os bônus por um preço menor do que
-        você pagaria no Básico sozinho?
+        Antes de levar só o Essencial, que tal a Biblioteca Completa com todos os bônus por um
+        preço menor do que você pagaria no Essencial sozinho?
       </p>
 
       <div class="flex flex-col items-center mb-7">
@@ -675,59 +564,26 @@ src="https://www.facebook.com/tr?id=1096195466206984&ev=PageView&noscript=1"
         <span class="text-xs text-ink/50 font-sans mt-2">só nesta oferta, pagamento único</span>
       </div>
 
-      <a href="https://pay.wiapy.com/MgTp9p49hx_s" target="_blank" rel="noopener noreferrer" class="cta-btn inline-flex items-center justify-center gap-3 bg-accent hover:bg-[#586341] text-white font-sans font-bold text-sm uppercase tracking-wide px-6 py-4 rounded-full shadow-lg transition-colors w-full mb-3">
+      <a href="#" data-checkout="completo-upsell" target="_blank" rel="noopener noreferrer" class="cta-btn inline-flex items-center justify-center gap-3 bg-accent hover:bg-[#586341] text-white font-sans font-bold text-sm uppercase tracking-wide px-6 py-4 rounded-full shadow-lg transition-colors w-full mb-3">
         Sim, quero o Completo por R$15
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
       </a>
-      <a href="https://pay.wiapy.com/UtgNOPgFHFCn" target="_blank" rel="noopener noreferrer" id="upsell-decline" class="inline-block text-xs font-semibold text-ink/50 hover:text-ink/80 underline underline-offset-4 transition-colors">
-        Não, quero continuar só com o Básico por R$10
+      <a href="#" data-checkout="essencial" id="upsell-decline" target="_blank" rel="noopener noreferrer" class="inline-block text-xs font-semibold text-ink/50 hover:text-ink/80 underline underline-offset-4 transition-colors">
+        Não, quero continuar só com o Essencial por R$10
       </a>
     </div>
   </div>
 
-    <!-- ===================== GARANTIA ===================== -->
-  <section class="w-full px-5 lg:px-10 py-16 lg:py-24 bg-white/60">
-    <div class="max-w-4xl mx-auto grid grid-cols-1 sm:grid-cols-[auto_1fr] gap-8 sm:gap-12 items-center">
-      <div class="mx-auto sm:mx-0 w-32 h-32 rounded-full bg-accent/10 border-4 border-dashed border-accent/25 flex items-center justify-center shrink-0">
-        <div class="w-24 h-24 rounded-full bg-accent text-white flex flex-col items-center justify-center text-center leading-tight">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6 mb-1"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></svg>
-          <span class="font-serif font-black text-lg leading-none">7 DIAS</span>
-          <span class="text-[9px] font-sans font-bold uppercase tracking-wide">de garantia</span>
-        </div>
-      </div>
-      <div class="text-center sm:text-left">
-        <h2 class="font-serif font-bold text-primary text-2xl sm:text-3xl leading-tight mb-4">Garantia de 7 Dias, <span class="italic text-accent font-semibold">Risco Zero para Você</span></h2>
-        <p class="text-sm text-ink/70 leading-relaxed mb-3">Nossa maior alegria é que você ame cada um dos desenhos e crie peças lindas com eles. Por isso, oferecemos uma garantia completa. Acesse o material, veja os riscos e avalie a organização.</p>
-        <p class="text-sm text-ink/70 leading-relaxed mb-6">Se por qualquer motivo você sentir que o acervo não é para você, basta nos enviar um único e-mail dentro do prazo de 7 dias e devolveremos 100% do seu dinheiro.</p>
-        <div class="flex flex-wrap justify-center sm:justify-start gap-2.5">
-          <span class="inline-flex items-center gap-1.5 bg-white border border-accent/25 text-accent text-xs font-semibold px-3.5 py-2 rounded-full">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="w-3.5 h-3.5"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>
-            Sem burocracia
-          </span>
-          <span class="inline-flex items-center gap-1.5 bg-white border border-accent/25 text-accent text-xs font-semibold px-3.5 py-2 rounded-full">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="w-3.5 h-3.5"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>
-            Sem complicação
-          </span>
-          <span class="inline-flex items-center gap-1.5 bg-white border border-accent/25 text-accent text-xs font-semibold px-3.5 py-2 rounded-full">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="w-3.5 h-3.5"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>
-            O risco fica com a gente
-          </span>
-        </div>
-      </div>
-    </div>
-  </section>
-
-<!-- ===================== DEPOIMENTOS ===================== -->
-  <section id="depoimentos" class="w-full px-5 lg:px-10 py-16 lg:py-24 bg-white/60">
+  <!-- ===================== 7. PROVA SOCIAL ===================== -->
+  <section id="depoimentos" class="w-full px-5 lg:px-10 py-16 lg:py-24">
     <div class="max-w-6xl mx-auto">
-      <div class="text-center max-w-xl mx-auto mb-12 lg:mb-16">
-        <p class="font-sans text-xs font-bold uppercase tracking-[0.18em] text-accent mb-3">Histórias reais</p>
-        <h2 class="font-serif font-bold text-primary text-3xl sm:text-4xl leading-tight">Quem já Recebeu</h2>
+      <div class="text-center max-w-xl mx-auto mb-12">
+        <p class="font-sans text-xs sm:text-sm font-bold uppercase tracking-[0.18em] text-accent mb-3">Histórias reais</p>
+        <h2 class="font-serif font-bold text-primary text-[1.85rem] sm:text-4xl lg:text-5xl leading-[1.12]">Quem já Recebeu</h2>
       </div>
 
       <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-5 lg:gap-6 max-w-5xl mx-auto">
 
-        <!-- Depoimento: Fernanda -->
         <div class="rounded-[1.4rem] bg-[#1c1c1c] p-1.5 shadow-[0_25px_45px_-22px_rgba(122,59,46,0.4)] w-full">
           <div class="rounded-[1.1rem] overflow-hidden bg-white">
             <div class="h-5 bg-[#1c1c1c] flex items-center justify-center">
@@ -737,13 +593,11 @@ src="https://www.facebook.com/tr?id=1096195466206984&ev=PageView&noscript=1"
           </div>
         </div>
 
-        <!-- Peça bordada: floral em linho -->
         <div class="rounded-[1.4rem] overflow-hidden border border-primary/10 shadow-sm bg-white">
           <img src="images/depoimentos/peca-floral-linho.jpg" alt="Exemplo de peça bordada, floral em linho" loading="lazy" class="w-full aspect-[4/5] object-cover" />
           <span class="block text-center text-[10px] font-bold uppercase tracking-wide text-accent py-2">Peça bordada</span>
         </div>
 
-        <!-- Depoimento: Carla -->
         <div class="rounded-[1.4rem] bg-[#1c1c1c] p-1.5 shadow-[0_25px_45px_-22px_rgba(122,59,46,0.4)] w-full">
           <div class="rounded-[1.1rem] overflow-hidden bg-white">
             <div class="h-5 bg-[#1c1c1c] flex items-center justify-center">
@@ -753,13 +607,11 @@ src="https://www.facebook.com/tr?id=1096195466206984&ev=PageView&noscript=1"
           </div>
         </div>
 
-        <!-- Peça bordada: floral pano de prato -->
         <div class="rounded-[1.4rem] overflow-hidden border border-primary/10 shadow-sm bg-white">
           <img src="images/depoimentos/peca-floral-pano-prato.jpg" alt="Exemplo de peça bordada, pano de prato floral" loading="lazy" class="w-full aspect-[4/5] object-cover" />
           <span class="block text-center text-[10px] font-bold uppercase tracking-wide text-accent py-2">Peça bordada</span>
         </div>
 
-        <!-- Depoimento: Juliana -->
         <div class="rounded-[1.4rem] bg-[#1c1c1c] p-1.5 shadow-[0_25px_45px_-22px_rgba(122,59,46,0.4)] w-full">
           <div class="rounded-[1.1rem] overflow-hidden bg-white">
             <div class="h-5 bg-[#1c1c1c] flex items-center justify-center">
@@ -769,7 +621,6 @@ src="https://www.facebook.com/tr?id=1096195466206984&ev=PageView&noscript=1"
           </div>
         </div>
 
-        <!-- Depoimento: Ana Paula -->
         <div class="rounded-[1.4rem] bg-[#1c1c1c] p-1.5 shadow-[0_25px_45px_-22px_rgba(122,59,46,0.4)] w-full">
           <div class="rounded-[1.1rem] overflow-hidden bg-white">
             <div class="h-5 bg-[#1c1c1c] flex items-center justify-center">
@@ -779,7 +630,11 @@ src="https://www.facebook.com/tr?id=1096195466206984&ev=PageView&noscript=1"
           </div>
         </div>
 
-        <!-- Depoimento: Patrícia -->
+        <div class="rounded-[1.4rem] overflow-hidden border border-primary/10 shadow-sm bg-white">
+          <img src="images/depoimentos/peca-sagrado-coracao-bastidor.jpg" alt="Exemplo de peça bordada, Sagrado Coração de Jesus em bastidor" loading="lazy" class="w-full aspect-[4/5] object-cover" />
+          <span class="block text-center text-[10px] font-bold uppercase tracking-wide text-accent py-2">Peça bordada</span>
+        </div>
+
         <div class="rounded-[1.4rem] bg-[#1c1c1c] p-1.5 shadow-[0_25px_45px_-22px_rgba(122,59,46,0.4)] w-full">
           <div class="rounded-[1.1rem] overflow-hidden bg-white">
             <div class="h-5 bg-[#1c1c1c] flex items-center justify-center">
@@ -789,93 +644,101 @@ src="https://www.facebook.com/tr?id=1096195466206984&ev=PageView&noscript=1"
           </div>
         </div>
 
-        <!-- Peça bordada: pano de prato Divino -->
         <div class="rounded-[1.4rem] overflow-hidden border border-primary/10 shadow-sm bg-white">
           <img src="images/depoimentos/peca-divino-pano-prato.jpg" alt="Exemplo de peça bordada, pano de prato" loading="lazy" class="w-full aspect-[4/5] object-cover" />
           <span class="block text-center text-[10px] font-bold uppercase tracking-wide text-accent py-2">Peça bordada</span>
         </div>
 
-        <!-- Peça bordada: monograma em fronha -->
         <div class="rounded-[1.4rem] overflow-hidden border border-primary/10 shadow-sm bg-white">
           <img src="images/depoimentos/peca-monograma-mariano.jpg" alt="Exemplo de peça bordada, monograma em fronha" loading="lazy" class="w-full aspect-[4/5] object-cover" />
           <span class="block text-center text-[10px] font-bold uppercase tracking-wide text-accent py-2">Peça bordada</span>
         </div>
 
-        <!-- Peça bordada: Sagrado Coração em bastidor -->
-        <div class="rounded-[1.4rem] overflow-hidden border border-primary/10 shadow-sm bg-white">
-          <img src="images/depoimentos/peca-sagrado-coracao-bastidor.jpg" alt="Exemplo de peça bordada, Sagrado Coração de Jesus em bastidor" loading="lazy" class="w-full aspect-[4/5] object-cover" />
-          <span class="block text-center text-[10px] font-bold uppercase tracking-wide text-accent py-2">Peça bordada</span>
-        </div>
-
       </div>
     </div>
   </section>
 
-  <!-- ===================== FAQ ===================== -->
-  <section class="w-full px-5 lg:px-10 py-16 lg:py-24 bg-white/60">
+  <!-- ===================== 8. GARANTIA ===================== -->
+  <section id="garantia" class="w-full px-5 lg:px-10 py-16 lg:py-20 bg-white/60">
+    <div class="max-w-3xl mx-auto grid grid-cols-1 sm:grid-cols-[auto_1fr] gap-8 items-center">
+      <div class="mx-auto sm:mx-0 w-28 h-28 rounded-full bg-accent/10 border-4 border-dashed border-accent/25 flex items-center justify-center shrink-0">
+        <div class="w-20 h-20 rounded-full bg-accent text-white flex flex-col items-center justify-center text-center leading-tight">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 mb-1"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></svg>
+          <span class="font-serif font-black text-base leading-none">7 DIAS</span>
+        </div>
+      </div>
+      <div class="text-center sm:text-left">
+        <h2 class="font-serif font-bold text-primary text-2xl sm:text-3xl leading-tight mb-3">7 Dias para Conhecer sem Risco</h2>
+        <p class="text-base text-ink/70 leading-relaxed">Acesse o material e veja tudo por dentro. Se perceber que não é para você, solicite seu reembolso dentro do período de garantia.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== 9. FAQ ===================== -->
+  <section id="faq" class="w-full px-5 lg:px-10 py-16 lg:py-24">
     <div class="max-w-2xl mx-auto">
       <div class="text-center mb-12">
-        <p class="font-sans text-xs font-bold uppercase tracking-[0.18em] text-accent mb-3">Tire suas dúvidas</p>
-        <h2 class="font-serif font-bold text-primary text-3xl sm:text-4xl leading-tight">Perguntas Frequentes</h2>
+        <p class="font-sans text-xs sm:text-sm font-bold uppercase tracking-[0.18em] text-accent mb-3">Tire suas dúvidas</p>
+        <h2 class="font-serif font-bold text-primary text-[1.85rem] sm:text-4xl lg:text-5xl leading-[1.12]">Perguntas Frequentes</h2>
       </div>
 
       <div class="flex flex-col gap-3">
         <div class="faq-item border border-primary/12 rounded-xl px-5 py-4 sm:px-7 sm:py-5 bg-white cursor-pointer transition-colors hover:border-accent/30">
           <div class="flex justify-between items-center gap-4">
-            <h3 class="font-serif font-semibold text-[15px] sm:text-base text-primary">Em que formato o material é entregue?</h3>
+            <h3 class="font-serif font-semibold text-base sm:text-lg text-primary">Como recebo os modelos?</h3>
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="faq-icon w-5 h-5 text-accent shrink-0 transition-transform duration-300"><path d="m6 9 6 6 6-6"/></svg>
           </div>
           <div class="faq-content grid transition-all duration-300 overflow-hidden grid-rows-[0fr] opacity-0">
             <div class="overflow-hidden">
-              <p class="text-sm text-ink/70 leading-relaxed pt-3">Você recebe um arquivo em PDF por e-mail, pronto para baixar e imprimir quantas vezes quiser.</p>
+              <p class="text-sm sm:text-base text-ink/70 leading-relaxed pt-3">O acesso é liberado automaticamente no seu e-mail assim que o pagamento é confirmado. É um material 100% digital, sem envio pelos Correios.</p>
             </div>
           </div>
         </div>
 
         <div class="faq-item border border-primary/12 rounded-xl px-5 py-4 sm:px-7 sm:py-5 bg-white cursor-pointer transition-colors hover:border-accent/30">
           <div class="flex justify-between items-center gap-4">
-            <h3 class="font-serif font-semibold text-[15px] sm:text-base text-primary">Preciso de impressora especial?</h3>
+            <h3 class="font-serif font-semibold text-base sm:text-lg text-primary">Preciso de impressora especial?</h3>
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="faq-icon w-5 h-5 text-accent shrink-0 transition-transform duration-300"><path d="m6 9 6 6 6-6"/></svg>
           </div>
           <div class="faq-content grid transition-all duration-300 overflow-hidden grid-rows-[0fr] opacity-0">
             <div class="overflow-hidden">
-              <p class="text-sm text-ink/70 leading-relaxed pt-3">Não. Qualquer impressora doméstica em papel comum já é suficiente para imprimir os riscos.</p>
+              <p class="text-sm sm:text-base text-ink/70 leading-relaxed pt-3">Não. Qualquer impressora doméstica em papel comum já é suficiente para imprimir os riscos.</p>
             </div>
           </div>
         </div>
 
         <div class="faq-item border border-primary/12 rounded-xl px-5 py-4 sm:px-7 sm:py-5 bg-white cursor-pointer transition-colors hover:border-accent/30">
           <div class="flex justify-between items-center gap-4">
-            <h3 class="font-serif font-semibold text-[15px] sm:text-base text-primary">Funciona em qualquer tipo de tecido?</h3>
+            <h3 class="font-serif font-semibold text-base sm:text-lg text-primary">Como funciona a impressão direto no tecido?</h3>
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="faq-icon w-5 h-5 text-accent shrink-0 transition-transform duration-300"><path d="m6 9 6 6 6-6"/></svg>
           </div>
           <div class="faq-content grid transition-all duration-300 overflow-hidden grid-rows-[0fr] opacity-0">
             <div class="overflow-hidden">
-              <p class="text-sm text-ink/70 leading-relaxed pt-3">Sim. Os riscos podem ser transferidos para algodão, linho e outros tecidos comuns de bordado.</p>
+              <p class="text-sm sm:text-base text-ink/70 leading-relaxed pt-3">A Biblioteca Completa já inclui um guia rápido de técnicas de transferência para o tecido. Também estamos preparando um vídeo passo a passo específico sobre impressão direto no tecido, que ainda está em produção.</p>
             </div>
           </div>
         </div>
 
         <div class="faq-item border border-primary/12 rounded-xl px-5 py-4 sm:px-7 sm:py-5 bg-white cursor-pointer transition-colors hover:border-accent/30">
           <div class="flex justify-between items-center gap-4">
-            <h3 class="font-serif font-semibold text-[15px] sm:text-base text-primary">Não sei bordar, consigo usar mesmo assim?</h3>
+            <h3 class="font-serif font-semibold text-base sm:text-lg text-primary">Posso usar os modelos em peças que vendo?</h3>
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="faq-icon w-5 h-5 text-accent shrink-0 transition-transform duration-300"><path d="m6 9 6 6 6-6"/></svg>
           </div>
           <div class="faq-content grid transition-all duration-300 overflow-hidden grid-rows-[0fr] opacity-0">
             <div class="overflow-hidden">
-              <p class="text-sm text-ink/70 leading-relaxed pt-3">Sim. Os riscos já vêm prontos, então você só precisa seguir os traços com os pontos que já conhece ou está aprendendo.</p>
+              <p class="text-sm sm:text-base text-ink/70 leading-relaxed pt-3">Sim. Você pode vender livremente as peças bordadas que produzir a partir dos riscos, inclusive em encomendas. O que não é permitido é revender ou compartilhar os arquivos digitais: eles são de uso pessoal.</p>
             </div>
           </div>
         </div>
 
         <div class="faq-item border border-primary/12 rounded-xl px-5 py-4 sm:px-7 sm:py-5 bg-white cursor-pointer transition-colors hover:border-accent/30">
           <div class="flex justify-between items-center gap-4">
-            <h3 class="font-serif font-semibold text-[15px] sm:text-base text-primary">Recebo o material na hora?</h3>
+            <h3 class="font-serif font-semibold text-base sm:text-lg text-primary">É pagamento único?</h3>
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="faq-icon w-5 h-5 text-accent shrink-0 transition-transform duration-300"><path d="m6 9 6 6 6-6"/></svg>
           </div>
           <div class="faq-content grid transition-all duration-300 overflow-hidden grid-rows-[0fr] opacity-0">
             <div class="overflow-hidden">
-              <p class="text-sm text-ink/70 leading-relaxed pt-3">Sim. O acesso é liberado automaticamente no seu e-mail assim que o pagamento é aprovado.</p>
+              <p class="text-sm sm:text-base text-ink/70 leading-relaxed pt-3">Sim, pagamento único, sem mensalidade.</p>
             </div>
           </div>
         </div>
@@ -883,15 +746,17 @@ src="https://www.facebook.com/tr?id=1096195466206984&ev=PageView&noscript=1"
     </div>
   </section>
 
-  <!-- ===================== CTA FINAL ===================== -->
-  <section class="w-full px-5 lg:px-10 py-16 lg:py-20 bg-primary text-center">
+  <!-- ===================== 10. CTA FINAL ===================== -->
+  <section class="w-full px-5 lg:px-10 py-16 lg:py-24 bg-primary text-center">
     <div class="max-w-xl mx-auto">
-      <h2 class="font-serif font-bold text-white text-2xl sm:text-3xl leading-tight mb-4">Comece hoje a bordar com carinho</h2>
-      <p class="text-white/75 text-sm sm:text-base leading-relaxed mb-8">100 riscos prontos para imprimir, transferir e bordar à mão, a partir de R$10.</p>
-      <a href="#oferta" class="cta-btn inline-flex items-center justify-center gap-3 bg-white text-primary hover:bg-white/90 font-sans font-bold text-sm sm:text-base uppercase tracking-wide px-8 py-4 sm:px-10 sm:py-5 rounded-full shadow-lg transition-colors">
-        Quero Meus Riscos
+      <p class="font-sans text-xs sm:text-sm font-bold uppercase tracking-[0.18em] text-white/70 mb-4">Sua próxima encomenda pode ser mais simples</p>
+      <h2 class="font-serif font-bold text-white text-3xl sm:text-4xl leading-tight mb-4">Tenha Sempre um Modelo Pronto para Mostrar.</h2>
+      <p class="text-white/75 text-base sm:text-lg leading-relaxed mb-8">+100 modelos organizados para você atender suas clientes com mais agilidade e parar de perder tempo procurando riscos.</p>
+      <a href="#oferta" class="cta-btn inline-flex items-center justify-center gap-3 bg-white text-primary hover:bg-white/90 font-sans font-bold text-base sm:text-lg uppercase tracking-wide px-8 py-4 sm:px-10 sm:py-5 rounded-full shadow-lg transition-colors w-full sm:w-fit">
+        Quero Minha Biblioteca
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
       </a>
+      <p class="text-white/60 text-xs font-medium mt-5">Biblioteca Essencial <strong class="text-white/85">R$10</strong> &bull; Biblioteca Completa <strong class="text-white/85">R$20</strong> (mais escolhido)</p>
     </div>
   </section>
 
@@ -905,13 +770,32 @@ src="https://www.facebook.com/tr?id=1096195466206984&ev=PageView&noscript=1"
       <div class="w-9 h-9 rounded-full border border-white/15 flex items-center justify-center bg-white/5">
         <span class="font-serif font-bold text-white text-xs">FC</span>
       </div>
-      <span class="font-serif font-bold text-white text-sm">Fio de Carinho</span>
+      <span class="font-serif font-bold text-white text-sm">Fio de Carinho &bull; Biblioteca da Bordadeira</span>
     </div>
     <p class="text-xs font-medium">Compra 100% segura &bull; Produto digital, sem envio físico &bull; &copy; 2026 Fio de Carinho</p>
   </div>
 </footer>
 
+<!-- ===================== BARRA FIXA MOBILE ===================== -->
+<div id="sticky-cta" class="sticky-cta fixed bottom-0 inset-x-0 z-40 sm:hidden bg-white border-t border-primary/15 px-4 py-3 flex items-center justify-between gap-3 shadow-[0_-8px_20px_-10px_rgba(0,0,0,0.15)]">
+  <span class="text-[12px] font-semibold text-ink leading-tight">Biblioteca da Bordadeira<br /><span class="text-accent">a partir de R$10</span></span>
+  <a href="#oferta" class="cta-btn inline-flex items-center justify-center gap-1.5 bg-primary text-white font-sans font-bold text-xs uppercase tracking-wide px-5 py-3 rounded-full whitespace-nowrap shrink-0">
+    Quero Acessar
+  </a>
+</div>
+
 <script>
+  // Aplica os links de checkout centralizados em window.CHECKOUT a todos os elementos marcados.
+  document.querySelectorAll('[data-checkout]').forEach(function (el) {
+    var key = el.getAttribute('data-checkout');
+    var map = {
+      essencial: window.CHECKOUT.ESSENCIAL,
+      completo: window.CHECKOUT.COMPLETO,
+      'completo-upsell': window.CHECKOUT.COMPLETO_UPSELL,
+    };
+    if (map[key]) el.setAttribute('href', map[key]);
+  });
+
   document.querySelectorAll('.faq-item').forEach(function (item) {
     var content = item.querySelector('.faq-content');
     var icon = item.querySelector('.faq-icon');
@@ -937,7 +821,7 @@ src="https://www.facebook.com/tr?id=1096195466206984&ev=PageView&noscript=1"
     document.body.classList.remove('overflow-hidden');
   };
 
-  document.getElementById('btn-basico').addEventListener('click', openUpsell);
+  document.getElementById('btn-essencial').addEventListener('click', openUpsell);
   document.getElementById('upsell-close').addEventListener('click', closeUpsell);
   document.getElementById('upsell-backdrop').addEventListener('click', closeUpsell);
   document.getElementById('upsell-decline').addEventListener('click', function (e) {
@@ -946,6 +830,18 @@ src="https://www.facebook.com/tr?id=1096195466206984&ev=PageView&noscript=1"
   document.addEventListener('keydown', function (e) {
     if (e.key === 'Escape') closeUpsell();
   });
+
+  // Barra fixa mobile: aparece depois que a hero sai da viewport.
+  var stickyBar = document.getElementById('sticky-cta');
+  var heroSection = document.getElementById('inicio');
+  if (stickyBar && heroSection && 'IntersectionObserver' in window) {
+    var observer = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        stickyBar.classList.toggle('is-visible', !entry.isIntersecting && entry.boundingClientRect.top < 0);
+      });
+    }, { threshold: 0 });
+    observer.observe(heroSection);
+  }
 </script>
 
 </body>
