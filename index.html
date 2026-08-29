@@ -63,6 +63,9 @@ src="https://www.facebook.com/tr?id=1096195466206984&ev=PageView&noscript=1"
   }
   .mosaic-item { transition: transform .25s ease; }
   .mosaic-item:hover { transform: translateY(-4px); }
+  .carrossel-track { scrollbar-width: none; -ms-overflow-style: none; }
+  .carrossel-track::-webkit-scrollbar { display: none; }
+  .carrossel-dot { transition: background-color .2s ease, width .2s ease; }
   .badge-soon {
     background-image: repeating-linear-gradient(45deg, rgba(122,59,46,.06) 0 6px, transparent 6px 12px);
   }
@@ -71,9 +74,6 @@ src="https://www.facebook.com/tr?id=1096195466206984&ev=PageView&noscript=1"
     transition: transform .35s ease;
   }
   .sticky-cta.is-visible { transform: translateY(0); }
-  .flow-arrow { color: #6B7A4F; }
-  @media (min-width: 1024px) { .flow-arrow-v { display: none; } }
-  @media (max-width: 1023px) { .flow-arrow-h { display: none; } }
 </style>
 </head>
 <body class="font-sans text-ink antialiased">
@@ -83,31 +83,44 @@ src="https://www.facebook.com/tr?id=1096195466206984&ev=PageView&noscript=1"
   // Centraliza todos os links de checkout usados na página.
   // Troque aqui quando os links de pagamento mudarem — não é necessário editar o resto do HTML.
   window.CHECKOUT = {
-    ESSENCIAL: 'https://pay.wiapy.com/UtgNOPgFHFCn',        // Biblioteca Essencial, R$10
-    COMPLETO: 'https://pay.wiapy.com/EUBE-WpYBlrX',          // Biblioteca Completa, R$20
-    COMPLETO_UPSELL: 'https://pay.wiapy.com/MgTp9p49hx_s',   // Oferta especial da Completa mostrada no modal ao clicar em "Essencial"
+    ESSENCIAL: 'https://pay.wiapy.com/UtgNOPgFHFCn',        // Biblioteca Essencial, R$9,90
+    COMPLETO: 'https://pay.wiapy.com/EUBE-WpYBlrX',          // Biblioteca Completa, R$19,90
   };
 
   // ===================== ARQUITETURA DE FUNIL (documentação, nada abaixo é usado nesta página) =====================
-  // Esta landing page vende SOMENTE o produto principal (Biblioteca Essencial / Biblioteca Completa).
-  // Os produtos abaixo são planejados para as próximas etapas do funil e NÃO devem ser misturados
-  // como bônus gratuitos do produto principal. Nenhuma URL de checkout existe ainda para eles.
+  // Esta landing page vende SOMENTE o produto principal (Biblioteca Essencial / Biblioteca Completa),
+  // cada botão indo direto para o checkout correspondente. NÃO existe mais oferta intermediária/modal.
+  // Os produtos abaixo pertencem ao CHECKOUT/funil pós-clique e NÃO devem aparecer como itens
+  // inclusos ou bônus gratuitos nesta landing page. Nenhuma URL/ID de checkout existe ainda para eles —
+  // ao integrar, preencher as constantes abaixo e implementar no checkout real (não simular aqui).
   //
   // 1) PRODUTO PRINCIPAL — Biblioteca da Bordadeira (implementado nesta página)
-  //    Essencial R$10 / Completa R$20
+  //    Essencial R$9,90 / Completa R$19,90
   //
-  // 2) ORDER BUMP 1 — Kit da Bordadeira Organizada — R$9,90 (planejado)
-  //    Planilha de Precificação, Ficha de Encomenda, Controle de Pedidos,
-  //    Mensagens Prontas para WhatsApp, Etiquetas, Cartões de Agradecimento + bônus Lista de Fornecedores.
-  //    Requer checkout com suporte a order bump — se o checkout for externo (como o atual), não
-  //    implementar nada automático aqui; apenas manter esta documentação até a integração existir.
-  //    ORDER_BUMP_KIT_ORGANIZADA: '',
+  // 2) ORDER BUMP 1 (no checkout) — Kit da Bordadeira Organizada — R$9,90 (planejado)
+  //    Headline: "Organize suas encomendas do pedido à entrega."
+  //    Inclui: Planilha de Precificação, Ficha de Encomenda, Controle de Pedidos,
+  //    Mensagens Prontas para WhatsApp, Etiquetas, Cartões de Agradecimento.
+  //    Bônus: Lista de Fornecedores.
+  //    Copy do checkbox: "SIM! Quero adicionar o Kit da Bordadeira Organizada por apenas R$9,90"
+  //    Descrição: "Leve também ferramentas prontas para precificar, registrar pedidos, organizar
+  //    encomendas e profissionalizar seu atendimento."
+  //    ORDER_BUMP_KIT_ORGANIZADA_ID: '',
   //
-  // 3) ORDER BUMP 2 — Coleção Especial Panos de Prato — R$7,90–9,90 (planejado)
-  //    ORDER_BUMP_PANOS_DE_PRATO: '',
+  // 3) ORDER BUMP 2 (no checkout) — Coleção Especial Panos de Prato — R$7,90 (planejado)
+  //    Headline: "Tenha ainda mais opções para encomendas de panos de prato."
+  //    Copy do checkbox: "SIM! Quero adicionar a Coleção Especial de Panos de Prato"
+  //    Descrição: "Amplie seu acervo com uma coleção específica de modelos para panos de prato,
+  //    com opções para diferentes estilos de encomenda."
+  //    ORDER_BUMP_PANOS_DE_PRATO_ID: '',
   //
-  // 4) UPSELL — Biblioteca do Enxoval Bordado — R$19,90–27 (planejado, página própria futura)
-  //    UPSELL_BIBLIOTECA_ENXOVAL: '',
+  // 4) UPSELL (pós-compra, página própria futura) — Biblioteca do Enxoval Bordado — R$19,90 (planejado)
+  //    Headline: "Antes de acessar sua Biblioteca…"
+  //    Subheadline: "Que tal ampliar suas opções de encomenda com uma coleção criada especialmente
+  //    para enxovais bordados?"
+  //    CTA aceite: "SIM! QUERO ADICIONAR A BIBLIOTECA DO ENXOVAL"
+  //    CTA recusa: "Não, quero acessar apenas minha Biblioteca."
+  //    UPSELL_BIBLIOTECA_ENXOVAL_URL: '',
 </script>
 
 <!-- ===================== HEADER ===================== -->
@@ -220,26 +233,133 @@ src="https://www.facebook.com/tr?id=1096195466206984&ev=PageView&noscript=1"
   <section id="biblioteca" class="w-full px-5 lg:px-10 py-16 lg:py-24 bg-white/60">
     <div class="max-w-6xl mx-auto">
       <div class="text-center max-w-2xl mx-auto mb-10 lg:mb-14">
+        <p class="font-sans text-xs sm:text-sm font-bold uppercase tracking-[0.18em] text-accent mb-3">Prévia do acervo</p>
         <h2 class="font-serif font-bold text-primary text-[1.85rem] sm:text-4xl lg:text-5xl leading-[1.12] mb-4">+100 Modelos para Você Ter Sempre uma Opção para Mostrar</h2>
-        <p class="text-ink/70 text-base sm:text-lg leading-relaxed">Encontre rapidamente opções para sua próxima peça ou encomenda.</p>
+        <p class="text-ink/70 text-base sm:text-lg leading-relaxed">Veja uma amostra da variedade de riscos organizados que você vai encontrar na Biblioteca.</p>
       </div>
 
-      <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 lg:gap-4 max-w-5xl mx-auto auto-rows-[minmax(0,1fr)]">
-        <div class="mosaic-item col-span-2 row-span-2 rounded-2xl overflow-hidden border border-primary/10 bg-white shadow-sm aspect-square"><img src="images/catalogo/sagrado-coracao-jesus.jpg" alt="Risco de bordado do Sagrado Coração de Jesus com coroa de espinhos e flores" loading="lazy" class="w-full h-full object-cover" /></div>
-        <div class="mosaic-item rounded-2xl overflow-hidden border border-primary/10 bg-white shadow-sm aspect-square"><img src="images/catalogo/nossa-senhora-aparecida.jpg" alt="Risco de bordado de Nossa Senhora Aparecida com coroa e manto azul" loading="lazy" class="w-full h-full object-cover" /></div>
-        <div class="mosaic-item rounded-2xl overflow-hidden border border-primary/10 bg-white shadow-sm aspect-square"><img src="images/catalogo/cogumelos-na-chuva.jpg" alt="Risco de bordado de cogumelos na chuva com nuvem e flores" loading="lazy" class="w-full h-full object-cover" /></div>
-        <div class="mosaic-item rounded-2xl overflow-hidden border border-primary/10 bg-white shadow-sm aspect-square"><img src="images/catalogo/galo-carijo-amanhecer.jpg" alt="Risco de bordado de galo carijó ao amanhecer com sol e flores" loading="lazy" class="w-full h-full object-cover" /></div>
-        <div class="mosaic-item rounded-2xl overflow-hidden border border-primary/10 bg-white shadow-sm aspect-square"><img src="images/catalogo/xicaras-de-cafe.jpg" alt="Risco de bordado de xícaras de café floridas" loading="lazy" class="w-full h-full object-cover" /></div>
-        <div class="mosaic-item rounded-2xl overflow-hidden border border-primary/10 bg-white shadow-sm aspect-square"><img src="images/catalogo/colmeia-abelhinhas.jpg" alt="Risco de bordado de colmeia com abelhinhas e flores" loading="lazy" class="w-full h-full object-cover" /></div>
-        <div class="mosaic-item rounded-2xl overflow-hidden border border-primary/10 bg-white shadow-sm aspect-square"><img src="images/catalogo/casa-feliz-panela-fogo.jpg" alt="Risco de bordado com panela no fogo e frase Casa Feliz, Panela no Fogo" loading="lazy" class="w-full h-full object-cover" /></div>
-        <div class="mosaic-item rounded-2xl overflow-hidden border border-primary/10 bg-white shadow-sm aspect-square"><img src="images/catalogo/vasinho-manjericao.jpg" alt="Risco de bordado de vasinho de manjericão floral" loading="lazy" class="w-full h-full object-cover" /></div>
-        <div class="mosaic-item rounded-2xl overflow-hidden border border-primary/10 bg-white shadow-sm aspect-square"><img src="images/catalogo/peixinhos-aquario.jpg" alt="Risco de bordado de peixinhos dourados em aquário" loading="lazy" class="w-full h-full object-cover" /></div>
-        <div class="mosaic-item rounded-2xl bg-primary/5 border border-dashed border-primary/20 flex items-center justify-center aspect-square">
-          <span class="text-primary/60 text-xs font-bold uppercase tracking-wide text-center px-2">+ modelos no acervo completo</span>
+      <div class="relative max-w-5xl mx-auto">
+        <button type="button" id="carrossel-prev" aria-label="Ver modelo anterior" class="hidden sm:flex absolute -left-5 top-[38%] -translate-y-1/2 z-10 w-11 h-11 rounded-full bg-primary text-white items-center justify-center shadow-lg hover:bg-primary-hover transition-colors">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5"><path d="m15 18-6-6 6-6"/></svg>
+        </button>
+        <button type="button" id="carrossel-next" aria-label="Ver próximo modelo" class="hidden sm:flex absolute -right-5 top-[38%] -translate-y-1/2 z-10 w-11 h-11 rounded-full bg-primary text-white items-center justify-center shadow-lg hover:bg-primary-hover transition-colors">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5"><path d="m9 18 6-6-6-6"/></svg>
+        </button>
+
+        <div id="carrossel-track" class="carrossel-track flex gap-4 lg:gap-5 overflow-x-auto snap-x snap-mandatory scroll-smooth pb-2">
+          <div class="carrossel-card snap-center shrink-0 w-[78%] sm:w-[46%] lg:w-[31%] bg-white rounded-2xl border border-primary/10 shadow-sm overflow-hidden flex flex-col">
+            <div class="px-5 pt-5 pb-3 text-center border-b border-primary/10">
+              <p class="text-[10px] font-bold uppercase tracking-wide text-accent mb-1">Risco de Bordado</p>
+              <h3 class="font-serif font-bold text-primary text-base leading-snug">Sagrado Coração de Jesus</h3>
+            </div>
+            <div class="aspect-square"><img src="images/catalogo/sagrado-coracao-jesus.jpg" alt="Risco de bordado do Sagrado Coração de Jesus com coroa de espinhos e flores" loading="lazy" class="w-full h-full object-cover" /></div>
+            <p class="px-5 py-4 text-xs text-ink/55 text-center leading-relaxed mt-auto">Pronto para imprimir e transferir para o tecido <span class="text-accent">♥</span></p>
+          </div>
+          <div class="carrossel-card snap-center shrink-0 w-[78%] sm:w-[46%] lg:w-[31%] bg-white rounded-2xl border border-primary/10 shadow-sm overflow-hidden flex flex-col">
+            <div class="px-5 pt-5 pb-3 text-center border-b border-primary/10">
+              <p class="text-[10px] font-bold uppercase tracking-wide text-accent mb-1">Risco de Bordado</p>
+              <h3 class="font-serif font-bold text-primary text-base leading-snug">Nossa Senhora Aparecida</h3>
+            </div>
+            <div class="aspect-square"><img src="images/catalogo/nossa-senhora-aparecida.jpg" alt="Risco de bordado de Nossa Senhora Aparecida com coroa e manto azul" loading="lazy" class="w-full h-full object-cover" /></div>
+            <p class="px-5 py-4 text-xs text-ink/55 text-center leading-relaxed mt-auto">Pronto para imprimir e transferir para o tecido <span class="text-accent">♥</span></p>
+          </div>
+          <div class="carrossel-card snap-center shrink-0 w-[78%] sm:w-[46%] lg:w-[31%] bg-white rounded-2xl border border-primary/10 shadow-sm overflow-hidden flex flex-col">
+            <div class="px-5 pt-5 pb-3 text-center border-b border-primary/10">
+              <p class="text-[10px] font-bold uppercase tracking-wide text-accent mb-1">Risco de Bordado</p>
+              <h3 class="font-serif font-bold text-primary text-base leading-snug">Cogumelos na Chuva</h3>
+            </div>
+            <div class="aspect-square"><img src="images/catalogo/cogumelos-na-chuva.jpg" alt="Risco de bordado de cogumelos na chuva com nuvem e flores" loading="lazy" class="w-full h-full object-cover" /></div>
+            <p class="px-5 py-4 text-xs text-ink/55 text-center leading-relaxed mt-auto">Pronto para imprimir e transferir para o tecido <span class="text-accent">♥</span></p>
+          </div>
+          <div class="carrossel-card snap-center shrink-0 w-[78%] sm:w-[46%] lg:w-[31%] bg-white rounded-2xl border border-primary/10 shadow-sm overflow-hidden flex flex-col">
+            <div class="px-5 pt-5 pb-3 text-center border-b border-primary/10">
+              <p class="text-[10px] font-bold uppercase tracking-wide text-accent mb-1">Risco de Bordado</p>
+              <h3 class="font-serif font-bold text-primary text-base leading-snug">Galo Carijó ao Amanhecer</h3>
+            </div>
+            <div class="aspect-square"><img src="images/catalogo/galo-carijo-amanhecer.jpg" alt="Risco de bordado de galo carijó ao amanhecer com sol e flores" loading="lazy" class="w-full h-full object-cover" /></div>
+            <p class="px-5 py-4 text-xs text-ink/55 text-center leading-relaxed mt-auto">Pronto para imprimir e transferir para o tecido <span class="text-accent">♥</span></p>
+          </div>
+          <div class="carrossel-card snap-center shrink-0 w-[78%] sm:w-[46%] lg:w-[31%] bg-white rounded-2xl border border-primary/10 shadow-sm overflow-hidden flex flex-col">
+            <div class="px-5 pt-5 pb-3 text-center border-b border-primary/10">
+              <p class="text-[10px] font-bold uppercase tracking-wide text-accent mb-1">Risco de Bordado</p>
+              <h3 class="font-serif font-bold text-primary text-base leading-snug">Xícaras de Café</h3>
+            </div>
+            <div class="aspect-square"><img src="images/catalogo/xicaras-de-cafe.jpg" alt="Risco de bordado de xícaras de café floridas" loading="lazy" class="w-full h-full object-cover" /></div>
+            <p class="px-5 py-4 text-xs text-ink/55 text-center leading-relaxed mt-auto">Pronto para imprimir e transferir para o tecido <span class="text-accent">♥</span></p>
+          </div>
+          <div class="carrossel-card snap-center shrink-0 w-[78%] sm:w-[46%] lg:w-[31%] bg-white rounded-2xl border border-primary/10 shadow-sm overflow-hidden flex flex-col">
+            <div class="px-5 pt-5 pb-3 text-center border-b border-primary/10">
+              <p class="text-[10px] font-bold uppercase tracking-wide text-accent mb-1">Risco de Bordado</p>
+              <h3 class="font-serif font-bold text-primary text-base leading-snug">Colmeia e Abelhinhas</h3>
+            </div>
+            <div class="aspect-square"><img src="images/catalogo/colmeia-abelhinhas.jpg" alt="Risco de bordado de colmeia com abelhinhas e flores" loading="lazy" class="w-full h-full object-cover" /></div>
+            <p class="px-5 py-4 text-xs text-ink/55 text-center leading-relaxed mt-auto">Pronto para imprimir e transferir para o tecido <span class="text-accent">♥</span></p>
+          </div>
+          <div class="carrossel-card snap-center shrink-0 w-[78%] sm:w-[46%] lg:w-[31%] bg-white rounded-2xl border border-primary/10 shadow-sm overflow-hidden flex flex-col">
+            <div class="px-5 pt-5 pb-3 text-center border-b border-primary/10">
+              <p class="text-[10px] font-bold uppercase tracking-wide text-accent mb-1">Risco de Bordado</p>
+              <h3 class="font-serif font-bold text-primary text-base leading-snug">"Casa Feliz, Panela no Fogo"</h3>
+            </div>
+            <div class="aspect-square"><img src="images/catalogo/casa-feliz-panela-fogo.jpg" alt="Risco de bordado com panela no fogo e frase Casa Feliz, Panela no Fogo" loading="lazy" class="w-full h-full object-cover" /></div>
+            <p class="px-5 py-4 text-xs text-ink/55 text-center leading-relaxed mt-auto">Pronto para imprimir e transferir para o tecido <span class="text-accent">♥</span></p>
+          </div>
+          <div class="carrossel-card snap-center shrink-0 w-[78%] sm:w-[46%] lg:w-[31%] bg-white rounded-2xl border border-primary/10 shadow-sm overflow-hidden flex flex-col">
+            <div class="px-5 pt-5 pb-3 text-center border-b border-primary/10">
+              <p class="text-[10px] font-bold uppercase tracking-wide text-accent mb-1">Risco de Bordado</p>
+              <h3 class="font-serif font-bold text-primary text-base leading-snug">Vasinho de Manjericão</h3>
+            </div>
+            <div class="aspect-square"><img src="images/catalogo/vasinho-manjericao.jpg" alt="Risco de bordado de vasinho de manjericão floral" loading="lazy" class="w-full h-full object-cover" /></div>
+            <p class="px-5 py-4 text-xs text-ink/55 text-center leading-relaxed mt-auto">Pronto para imprimir e transferir para o tecido <span class="text-accent">♥</span></p>
+          </div>
+          <div class="carrossel-card snap-center shrink-0 w-[78%] sm:w-[46%] lg:w-[31%] bg-white rounded-2xl border border-primary/10 shadow-sm overflow-hidden flex flex-col">
+            <div class="px-5 pt-5 pb-3 text-center border-b border-primary/10">
+              <p class="text-[10px] font-bold uppercase tracking-wide text-accent mb-1">Risco de Bordado</p>
+              <h3 class="font-serif font-bold text-primary text-base leading-snug">Peixinhos no Aquário</h3>
+            </div>
+            <div class="aspect-square"><img src="images/catalogo/peixinhos-aquario.jpg" alt="Risco de bordado de peixinhos dourados em aquário" loading="lazy" class="w-full h-full object-cover" /></div>
+            <p class="px-5 py-4 text-xs text-ink/55 text-center leading-relaxed mt-auto">Pronto para imprimir e transferir para o tecido <span class="text-accent">♥</span></p>
+          </div>
+          <div class="carrossel-card snap-center shrink-0 w-[78%] sm:w-[46%] lg:w-[31%] bg-primary/5 border border-dashed border-primary/20 rounded-2xl flex flex-col items-center justify-center text-center px-6 py-10">
+            <span class="text-primary/60 text-sm font-bold uppercase tracking-wide">+ modelos no acervo completo</span>
+          </div>
+        </div>
+
+        <div id="carrossel-dots" class="flex items-center justify-center gap-1.5 mt-6"></div>
+      </div>
+
+      <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-5 lg:gap-6 mt-14 max-w-5xl mx-auto text-center">
+        <div class="flex flex-col items-center gap-2.5">
+          <div class="w-11 h-11 rounded-full bg-accent/10 text-accent flex items-center justify-center"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></div>
+          <p class="font-serif font-bold text-primary text-[13px] leading-tight">Acervo Completo</p>
+          <p class="text-[11px] text-ink/60 leading-snug">+100 riscos organizados por categoria</p>
+        </div>
+        <div class="flex flex-col items-center gap-2.5">
+          <div class="w-11 h-11 rounded-full bg-accent/10 text-accent flex items-center justify-center"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5"><path d="M12 15V3"/><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/></svg></div>
+          <p class="font-serif font-bold text-primary text-[13px] leading-tight">Prontos para Usar</p>
+          <p class="text-[11px] text-ink/60 leading-snug">Imprima, transfira e borde com facilidade</p>
+        </div>
+        <div class="flex flex-col items-center gap-2.5">
+          <div class="w-11 h-11 rounded-full bg-accent/10 text-accent flex items-center justify-center"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 1 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78Z"/></svg></div>
+          <p class="font-serif font-bold text-primary text-[13px] leading-tight">Para Todos os Níveis</p>
+          <p class="text-[11px] text-ink/60 leading-snug">Você não precisa saber desenhar</p>
+        </div>
+        <div class="flex flex-col items-center gap-2.5">
+          <div class="w-11 h-11 rounded-full bg-accent/10 text-accent flex items-center justify-center"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg></div>
+          <p class="font-serif font-bold text-primary text-[13px] leading-tight">Fácil de Encontrar</p>
+          <p class="text-[11px] text-ink/60 leading-snug">Organizados para você achar rápido</p>
+        </div>
+        <div class="flex flex-col items-center gap-2.5 col-span-2 sm:col-span-1">
+          <div class="w-11 h-11 rounded-full bg-accent/10 text-accent flex items-center justify-center"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5"><path d="M12 21s-7-4.5-9.5-9C1 8 3 5 6 5c2 0 3.5 1 4 2 .5-1 2-2 4-2 3 0 5 3 3.5 7C19 16.5 12 21 12 21Z"/></svg></div>
+          <p class="font-serif font-bold text-primary text-[13px] leading-tight">Crie e Encante</p>
+          <p class="text-[11px] text-ink/60 leading-snug">Transforme em peças para presentear ou vender</p>
         </div>
       </div>
 
-      <div class="text-center mt-10">
+      <div class="max-w-md mx-auto mt-10 bg-bg border border-primary/15 rounded-full px-6 py-3.5 text-center">
+        <p class="font-serif font-bold text-primary text-[13px] sm:text-sm uppercase tracking-wide">Mais de 100 Riscos Esperando pela Sua Próxima Peça</p>
+      </div>
+
+      <div class="text-center mt-8">
         <a href="#oferta" class="inline-flex items-center gap-2 bg-accent hover:bg-[#586341] text-white font-sans font-bold text-sm uppercase tracking-wide px-7 py-3.5 rounded-full transition-colors">
           Ver Planos e Preços
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4"><path d="m9 18 6-6-6-6"/></svg>
@@ -292,70 +412,17 @@ src="https://www.facebook.com/tr?id=1096195466206984&ev=PageView&noscript=1"
 
   <!-- ===================== 4. COMO FUNCIONA ===================== -->
   <section id="como-funciona" class="w-full px-5 lg:px-10 py-16 lg:py-24 bg-white/60">
-    <div class="max-w-6xl mx-auto">
-      <div class="text-center max-w-xl mx-auto mb-12">
-        <p class="font-sans text-xs sm:text-sm font-bold uppercase tracking-[0.18em] text-accent mb-3">Simples do início ao fim</p>
-        <h2 class="font-serif font-bold text-primary text-[1.85rem] sm:text-4xl lg:text-5xl leading-[1.12]">Como Funciona</h2>
-      </div>
-
-      <div class="flex flex-col lg:flex-row items-center justify-center gap-3 lg:gap-2 mb-14 max-w-5xl mx-auto">
-        <div class="bg-white border border-primary/10 rounded-2xl px-5 py-4 text-center shadow-sm w-full lg:w-auto lg:flex-1">
-          <span class="font-serif font-bold text-primary text-sm sm:text-base">Cliente Pediu</span>
-        </div>
-        <svg class="flow-arrow flow-arrow-v w-5 h-5 shrink-0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M19 12l-7 7-7-7"/></svg>
-        <svg class="flow-arrow flow-arrow-h w-5 h-5 shrink-0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-        <div class="bg-white border border-primary/10 rounded-2xl px-5 py-4 text-center shadow-sm w-full lg:w-auto lg:flex-1">
-          <span class="font-serif font-bold text-primary text-sm sm:text-base">Encontre</span>
-        </div>
-        <svg class="flow-arrow flow-arrow-v w-5 h-5 shrink-0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M19 12l-7 7-7-7"/></svg>
-        <svg class="flow-arrow flow-arrow-h w-5 h-5 shrink-0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-        <div class="bg-white border border-primary/10 rounded-2xl px-5 py-4 text-center shadow-sm w-full lg:w-auto lg:flex-1">
-          <span class="font-serif font-bold text-primary text-sm sm:text-base">Mostre</span>
-        </div>
-        <svg class="flow-arrow flow-arrow-v w-5 h-5 shrink-0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M19 12l-7 7-7-7"/></svg>
-        <svg class="flow-arrow flow-arrow-h w-5 h-5 shrink-0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-        <div class="bg-white border border-primary/10 rounded-2xl px-5 py-4 text-center shadow-sm w-full lg:w-auto lg:flex-1">
-          <span class="font-serif font-bold text-primary text-sm sm:text-base">Imprima</span>
-        </div>
-        <svg class="flow-arrow flow-arrow-v w-5 h-5 shrink-0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M19 12l-7 7-7-7"/></svg>
-        <svg class="flow-arrow flow-arrow-h w-5 h-5 shrink-0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-        <div class="bg-primary border border-primary rounded-2xl px-5 py-4 text-center shadow-sm w-full lg:w-auto lg:flex-1">
-          <span class="font-serif font-bold text-white text-sm sm:text-base">Borde</span>
-        </div>
-      </div>
-
-      <div class="grid grid-cols-2 lg:grid-cols-4 gap-5 lg:gap-6">
-        <div class="bg-white rounded-2xl border border-primary/10 shadow-sm px-5 py-7 text-center flex flex-col items-center">
-          <div class="w-12 h-12 rounded-full bg-accent/10 text-accent flex items-center justify-center font-serif font-bold text-lg mb-4">1</div>
-          <h3 class="font-serif font-bold text-primary text-lg mb-2">Encontre</h3>
-          <p class="text-sm sm:text-base text-ink/70 leading-relaxed">Abra sua Biblioteca.</p>
-        </div>
-        <div class="bg-white rounded-2xl border border-primary/10 shadow-sm px-5 py-7 text-center flex flex-col items-center">
-          <div class="w-12 h-12 rounded-full bg-accent/10 text-accent flex items-center justify-center font-serif font-bold text-lg mb-4">2</div>
-          <h3 class="font-serif font-bold text-primary text-lg mb-2">Mostre</h3>
-          <p class="text-sm sm:text-base text-ink/70 leading-relaxed">Apresente as opções para a cliente.</p>
-        </div>
-        <div class="bg-white rounded-2xl border border-primary/10 shadow-sm px-5 py-7 text-center flex flex-col items-center">
-          <div class="w-12 h-12 rounded-full bg-accent/10 text-accent flex items-center justify-center font-serif font-bold text-lg mb-4">3</div>
-          <h3 class="font-serif font-bold text-primary text-lg mb-2">Imprima</h3>
-          <p class="text-sm sm:text-base text-ink/70 leading-relaxed">Prepare o risco escolhido.</p>
-        </div>
-        <div class="bg-white rounded-2xl border border-primary/10 shadow-sm px-5 py-7 text-center flex flex-col items-center">
-          <div class="w-12 h-12 rounded-full bg-accent/10 text-accent flex items-center justify-center font-serif font-bold text-lg mb-4">4</div>
-          <h3 class="font-serif font-bold text-primary text-lg mb-2">Borde</h3>
-          <p class="text-sm sm:text-base text-ink/70 leading-relaxed">Comece sua encomenda.</p>
-        </div>
-      </div>
+    <div class="max-w-4xl mx-auto">
+      <img
+        src="images/como-funciona/do-pedido-a-entrega.jpg"
+        alt="Do pedido à entrega, com muito mais agilidade: 1) Cliente pediu — ela faz o pedido do tema que deseja; 2) Encontre — abra sua Biblioteca e encontre opções rapidamente; 3) Mostre — apresente as opções para a cliente e escolham juntas; 4) Imprima — prepare o risco escolhido; 5) Borde — comece sua encomenda. Menos tempo procurando, mais tempo bordando: +100 modelos prontos para facilitar suas encomendas."
+        loading="lazy"
+        class="w-full h-auto rounded-2xl border border-primary/10 shadow-sm"
+      />
     </div>
   </section>
 
   <!-- ===================== 5. VÍDEO: IMPRIMIR DIRETO NO TECIDO ===================== -->
-  <!--
-    TODO (produto): gravar o vídeo real de passo a passo de impressão direto no tecido.
-    Quando estiver pronto, substituir o bloco "placeholder" abaixo por um <video> ou embed real,
-    seguindo o mesmo padrão usado na seção de prova social / mostruário (sempre com assets reais).
-    Sugestão de arquivo: video/impressao-tecido.mp4 (ainda não existe no projeto).
-  -->
   <section id="video" class="w-full px-5 lg:px-10 py-16 lg:py-24">
     <div class="max-w-3xl mx-auto flex flex-col items-center text-center">
       <p class="font-sans text-xs sm:text-sm font-bold uppercase tracking-[0.18em] text-accent mb-3">Passo a Passo em Vídeo</p>
@@ -365,15 +432,13 @@ src="https://www.facebook.com/tr?id=1096195466206984&ev=PageView&noscript=1"
         tecido, deixando sua produção ainda mais prática.
       </p>
 
-      <div class="w-full max-w-2xl rounded-2xl border-2 border-dashed border-primary/25 badge-soon px-6 py-14 sm:py-16 flex flex-col items-center gap-5">
-        <div class="flex items-center gap-4 text-primary/50">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="w-9 h-9"><path d="M6 9V2h12v7M6 18h12v4H6zM4 9h16a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2h-2v-4H6v4H4a2 2 0 0 1-2-2v-6a2 2 0 0 1 2-2Z"/></svg>
-          <div class="w-14 h-14 rounded-full border-2 border-primary/30 flex items-center justify-center shrink-0">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6 text-primary/40 ml-0.5"><path d="M8 5v14l11-7z"/></svg>
-          </div>
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="w-9 h-9"><path d="M2 12c2-4 4 4 6 0s4 4 6 0 4 4 6 0"/></svg>
+      <div class="w-full max-w-md rounded-2xl border border-primary/15 bg-bg p-2 sm:p-3 shadow-[0_24px_55px_-28px_rgba(122,59,46,0.4)]">
+        <div class="w-full overflow-hidden rounded-xl bg-primary flex items-center justify-center">
+          <video class="w-full h-auto max-h-[70vh] block" controls playsinline preload="metadata">
+            <source src="video/impressao-tecido.mp4" type="video/mp4" />
+            Seu navegador não suporta a reprodução deste vídeo.
+          </video>
         </div>
-        <span class="bg-primary/10 text-primary text-[11px] font-bold uppercase tracking-wide px-3 py-1.5 rounded-full">Vídeo em produção</span>
       </div>
 
       <a href="#oferta" class="text-sm font-semibold text-primary hover:text-primary-hover underline underline-offset-4 transition-colors mt-8">Ver planos e preços</a>
@@ -398,7 +463,7 @@ src="https://www.facebook.com/tr?id=1096195466206984&ev=PageView&noscript=1"
 
           <div class="flex flex-col items-center mb-6">
             <span class="text-ink/40 line-through text-sm font-sans">De R$47</span>
-            <span class="font-serif font-black text-primary text-4xl leading-none mt-1">R$10</span>
+            <span class="font-serif font-black text-primary text-4xl leading-none mt-1">R$9,90</span>
             <span class="text-xs text-ink/50 font-sans mt-2">pagamento único</span>
           </div>
 
@@ -421,9 +486,9 @@ src="https://www.facebook.com/tr?id=1096195466206984&ev=PageView&noscript=1"
             </li>
           </ul>
 
-          <button type="button" id="btn-essencial" class="cta-btn inline-flex items-center justify-center gap-2 bg-white border-2 border-primary text-primary hover:bg-primary hover:text-white font-sans font-bold text-xs uppercase tracking-wide px-6 py-3.5 rounded-full transition-colors w-full">
+          <a href="#" data-checkout="essencial" target="_blank" rel="noopener noreferrer" class="cta-btn inline-flex items-center justify-center gap-2 bg-white border-2 border-primary text-primary hover:bg-primary hover:text-white font-sans font-bold text-xs uppercase tracking-wide px-6 py-3.5 rounded-full transition-colors w-full">
             Quero o Essencial
-          </button>
+          </a>
         </div>
 
         <!-- Biblioteca Completa -->
@@ -434,10 +499,10 @@ src="https://www.facebook.com/tr?id=1096195466206984&ev=PageView&noscript=1"
 
           <div class="flex flex-col items-center mb-3">
             <span class="text-ink/40 line-through text-sm font-sans">De R$97</span>
-            <span class="font-serif font-black text-primary text-6xl leading-none mt-1">R$20</span>
+            <span class="font-serif font-black text-primary text-6xl leading-none mt-1">R$19<span class="text-3xl">,90</span></span>
             <span class="text-xs text-ink/50 font-sans mt-2">pagamento único, sem mensalidade</span>
           </div>
-          <p class="text-xs text-accent font-semibold mb-6">Por apenas R$10 a mais, leve também os materiais extras para facilitar ainda mais suas encomendas.</p>
+          <p class="text-xs text-accent font-semibold mb-6">Por apenas R$10 a mais, leve a Biblioteca Completa + todos os materiais extras.</p>
 
           <ul class="text-left space-y-3 mb-6">
             <li class="flex items-start gap-3">
@@ -458,62 +523,56 @@ src="https://www.facebook.com/tr?id=1096195466206984&ev=PageView&noscript=1"
             </li>
           </ul>
 
-          <!--
-            Bônus 01, 02, 03, 04 e 05 abaixo ainda NÃO existem como material entregável.
-            Mantidos na estrutura (com selo "Em breve") por decisão de produto, para já comunicar
-            o roadmap da Biblioteca Completa. NÃO remover o selo "Em breve" desses itens até o
-            material real (arquivo, vídeo ou coleção) existir de fato no projeto.
-            Bônus 06 (Guia de Transferência) já existe e é entregue desde já.
-          -->
+          <!-- Bônus 01 a 06: todos confirmados como material real, entregue desde já. -->
           <div class="grid grid-cols-1 gap-2 mb-8 text-left">
-            <div class="flex items-center gap-3 badge-soon border border-dashed border-primary/20 rounded-xl px-4 py-2.5">
+            <div class="flex items-center gap-3 bg-accent/5 border border-accent/15 rounded-xl px-4 py-2.5">
               <span class="text-base shrink-0">🎁</span>
               <div class="flex-1">
                 <div class="flex items-center gap-2 flex-wrap">
-                  <span class="text-[9px] font-bold uppercase tracking-wide text-primary/60">Bônus 01</span>
-                  <span class="bg-primary/10 text-primary/60 text-[8px] font-bold uppercase tracking-wide px-2 py-0.5 rounded-full">Em breve</span>
+                  <span class="text-[9px] font-bold uppercase tracking-wide text-accent">Bônus 01</span>
+                  <span class="bg-accent/15 text-accent text-[8px] font-bold uppercase tracking-wide px-2 py-0.5 rounded-full">Disponível agora</span>
                 </div>
-                <p class="text-xs text-ink/60 leading-snug font-semibold text-ink/70">Catálogo digital para mostrar às clientes</p>
+                <p class="text-xs text-ink/85 leading-snug font-semibold">Catálogo digital para mostrar às clientes</p>
               </div>
             </div>
-            <div class="flex items-center gap-3 badge-soon border border-dashed border-primary/20 rounded-xl px-4 py-2.5">
+            <div class="flex items-center gap-3 bg-accent/5 border border-accent/15 rounded-xl px-4 py-2.5">
               <span class="text-base shrink-0">🎥</span>
               <div class="flex-1">
                 <div class="flex items-center gap-2 flex-wrap">
-                  <span class="text-[9px] font-bold uppercase tracking-wide text-primary/60">Bônus 02</span>
-                  <span class="bg-primary/10 text-primary/60 text-[8px] font-bold uppercase tracking-wide px-2 py-0.5 rounded-full">Em breve</span>
+                  <span class="text-[9px] font-bold uppercase tracking-wide text-accent">Bônus 02</span>
+                  <span class="bg-accent/15 text-accent text-[8px] font-bold uppercase tracking-wide px-2 py-0.5 rounded-full">Disponível agora</span>
                 </div>
-                <p class="text-xs text-ink/60 leading-snug font-semibold text-ink/70">Vídeo: como imprimir o risco direto no tecido</p>
+                <p class="text-xs text-ink/85 leading-snug font-semibold">Vídeo: como imprimir o risco direto no tecido</p>
               </div>
             </div>
-            <div class="flex items-center gap-3 badge-soon border border-dashed border-primary/20 rounded-xl px-4 py-2.5">
+            <div class="flex items-center gap-3 bg-accent/5 border border-accent/15 rounded-xl px-4 py-2.5">
               <span class="text-base shrink-0">🎁</span>
               <div class="flex-1">
                 <div class="flex items-center gap-2 flex-wrap">
-                  <span class="text-[9px] font-bold uppercase tracking-wide text-primary/60">Bônus 03</span>
-                  <span class="bg-primary/10 text-primary/60 text-[8px] font-bold uppercase tracking-wide px-2 py-0.5 rounded-full">Em breve</span>
+                  <span class="text-[9px] font-bold uppercase tracking-wide text-accent">Bônus 03</span>
+                  <span class="bg-accent/15 text-accent text-[8px] font-bold uppercase tracking-wide px-2 py-0.5 rounded-full">Disponível agora</span>
                 </div>
-                <p class="text-xs text-ink/60 leading-snug font-semibold text-ink/70">Kit de alfabetos e monogramas</p>
+                <p class="text-xs text-ink/85 leading-snug font-semibold">Kit de alfabetos e monogramas</p>
               </div>
             </div>
-            <div class="flex items-center gap-3 badge-soon border border-dashed border-primary/20 rounded-xl px-4 py-2.5">
+            <div class="flex items-center gap-3 bg-accent/5 border border-accent/15 rounded-xl px-4 py-2.5">
               <span class="text-base shrink-0">🎁</span>
               <div class="flex-1">
                 <div class="flex items-center gap-2 flex-wrap">
-                  <span class="text-[9px] font-bold uppercase tracking-wide text-primary/60">Bônus 04</span>
-                  <span class="bg-primary/10 text-primary/60 text-[8px] font-bold uppercase tracking-wide px-2 py-0.5 rounded-full">Em breve</span>
+                  <span class="text-[9px] font-bold uppercase tracking-wide text-accent">Bônus 04</span>
+                  <span class="bg-accent/15 text-accent text-[8px] font-bold uppercase tracking-wide px-2 py-0.5 rounded-full">Disponível agora</span>
                 </div>
-                <p class="text-xs text-ink/60 leading-snug font-semibold text-ink/70">Coleção de riscos religiosos</p>
+                <p class="text-xs text-ink/85 leading-snug font-semibold">Coleção de riscos religiosos</p>
               </div>
             </div>
-            <div class="flex items-center gap-3 badge-soon border border-dashed border-primary/20 rounded-xl px-4 py-2.5">
+            <div class="flex items-center gap-3 bg-accent/5 border border-accent/15 rounded-xl px-4 py-2.5">
               <span class="text-base shrink-0">🎁</span>
               <div class="flex-1">
                 <div class="flex items-center gap-2 flex-wrap">
-                  <span class="text-[9px] font-bold uppercase tracking-wide text-primary/60">Bônus 05</span>
-                  <span class="bg-primary/10 text-primary/60 text-[8px] font-bold uppercase tracking-wide px-2 py-0.5 rounded-full">Em breve</span>
+                  <span class="text-[9px] font-bold uppercase tracking-wide text-accent">Bônus 05</span>
+                  <span class="bg-accent/15 text-accent text-[8px] font-bold uppercase tracking-wide px-2 py-0.5 rounded-full">Disponível agora</span>
                 </div>
-                <p class="text-xs text-ink/60 leading-snug font-semibold text-ink/70">Coleção de datas comemorativas</p>
+                <p class="text-xs text-ink/85 leading-snug font-semibold">Coleção de datas comemorativas</p>
               </div>
             </div>
             <div class="flex items-center gap-3 bg-accent/5 border border-accent/15 rounded-xl px-4 py-2.5">
@@ -542,37 +601,6 @@ src="https://www.facebook.com/tr?id=1096195466206984&ev=PageView&noscript=1"
       </div>
     </div>
   </section>
-
-  <!-- ===================== POPUP OFERTA (interceptação ao clicar no Essencial) ===================== -->
-  <div id="upsell-modal" class="hidden fixed inset-0 z-[100] items-center justify-center px-4">
-    <div id="upsell-backdrop" class="absolute inset-0 bg-ink/60 backdrop-blur-sm"></div>
-    <div class="relative bg-bg w-full max-w-md rounded-[1.75rem] border border-primary/15 shadow-2xl px-6 py-9 sm:px-9 sm:py-10 text-center">
-      <button type="button" id="upsell-close" aria-label="Fechar" class="absolute top-4 right-4 w-8 h-8 rounded-full flex items-center justify-center text-ink/40 hover:text-ink hover:bg-ink/5 transition-colors">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4"><path d="M18 6 6 18M6 6l12 12"/></svg>
-      </button>
-
-      <span class="inline-block bg-accent/15 text-accent text-[11px] font-bold uppercase tracking-wide px-4 py-1.5 rounded-full mb-5">Oferta única, só agora</span>
-      <h3 class="font-serif font-bold text-primary text-2xl leading-tight mb-3">Espera, temos algo melhor pra você</h3>
-      <p class="text-sm text-ink/75 leading-relaxed mb-6">
-        Antes de levar só o Essencial, que tal a Biblioteca Completa com todos os bônus por um
-        preço menor do que você pagaria no Essencial sozinho?
-      </p>
-
-      <div class="flex flex-col items-center mb-7">
-        <span class="text-ink/40 line-through text-sm font-sans">De R$20</span>
-        <span class="font-serif font-black text-accent text-5xl leading-none mt-1">Por R$15</span>
-        <span class="text-xs text-ink/50 font-sans mt-2">só nesta oferta, pagamento único</span>
-      </div>
-
-      <a href="#" data-checkout="completo-upsell" target="_blank" rel="noopener noreferrer" class="cta-btn inline-flex items-center justify-center gap-3 bg-accent hover:bg-[#586341] text-white font-sans font-bold text-sm uppercase tracking-wide px-6 py-4 rounded-full shadow-lg transition-colors w-full mb-3">
-        Sim, quero o Completo por R$15
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-      </a>
-      <a href="#" data-checkout="essencial" id="upsell-decline" target="_blank" rel="noopener noreferrer" class="inline-block text-xs font-semibold text-ink/50 hover:text-ink/80 underline underline-offset-4 transition-colors">
-        Não, quero continuar só com o Essencial por R$10
-      </a>
-    </div>
-  </div>
 
   <!-- ===================== 7. PROVA SOCIAL ===================== -->
   <section id="depoimentos" class="w-full px-5 lg:px-10 py-16 lg:py-24">
@@ -714,7 +742,7 @@ src="https://www.facebook.com/tr?id=1096195466206984&ev=PageView&noscript=1"
           </div>
           <div class="faq-content grid transition-all duration-300 overflow-hidden grid-rows-[0fr] opacity-0">
             <div class="overflow-hidden">
-              <p class="text-sm sm:text-base text-ink/70 leading-relaxed pt-3">A Biblioteca Completa já inclui um guia rápido de técnicas de transferência para o tecido. Também estamos preparando um vídeo passo a passo específico sobre impressão direto no tecido, que ainda está em produção.</p>
+              <p class="text-sm sm:text-base text-ink/70 leading-relaxed pt-3">A Biblioteca Completa já inclui o guia rápido de técnicas de transferência e um vídeo passo a passo mostrando como preparar e imprimir o desenho diretamente no tecido.</p>
             </div>
           </div>
         </div>
@@ -756,7 +784,7 @@ src="https://www.facebook.com/tr?id=1096195466206984&ev=PageView&noscript=1"
         Quero Minha Biblioteca
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
       </a>
-      <p class="text-white/60 text-xs font-medium mt-5">Biblioteca Essencial <strong class="text-white/85">R$10</strong> &bull; Biblioteca Completa <strong class="text-white/85">R$20</strong> (mais escolhido)</p>
+      <p class="text-white/60 text-xs font-medium mt-5">Biblioteca Essencial <strong class="text-white/85">R$9,90</strong> &bull; Biblioteca Completa <strong class="text-white/85">R$19,90</strong> (mais escolhida)</p>
     </div>
   </section>
 
@@ -778,7 +806,7 @@ src="https://www.facebook.com/tr?id=1096195466206984&ev=PageView&noscript=1"
 
 <!-- ===================== BARRA FIXA MOBILE ===================== -->
 <div id="sticky-cta" class="sticky-cta fixed bottom-0 inset-x-0 z-40 sm:hidden bg-white border-t border-primary/15 px-4 py-3 flex items-center justify-between gap-3 shadow-[0_-8px_20px_-10px_rgba(0,0,0,0.15)]">
-  <span class="text-[12px] font-semibold text-ink leading-tight">Biblioteca da Bordadeira<br /><span class="text-accent">a partir de R$10</span></span>
+  <span class="text-[12px] font-semibold text-ink leading-tight">Biblioteca da Bordadeira<br /><span class="text-accent">a partir de R$9,90</span></span>
   <a href="#oferta" class="cta-btn inline-flex items-center justify-center gap-1.5 bg-primary text-white font-sans font-bold text-xs uppercase tracking-wide px-5 py-3 rounded-full whitespace-nowrap shrink-0">
     Quero Acessar
   </a>
@@ -791,7 +819,6 @@ src="https://www.facebook.com/tr?id=1096195466206984&ev=PageView&noscript=1"
     var map = {
       essencial: window.CHECKOUT.ESSENCIAL,
       completo: window.CHECKOUT.COMPLETO,
-      'completo-upsell': window.CHECKOUT.COMPLETO_UPSELL,
     };
     if (map[key]) el.setAttribute('href', map[key]);
   });
@@ -809,27 +836,61 @@ src="https://www.facebook.com/tr?id=1096195466206984&ev=PageView&noscript=1"
     });
   });
 
-  var upsellModal = document.getElementById('upsell-modal');
-  var openUpsell = function () {
-    upsellModal.classList.remove('hidden');
-    upsellModal.classList.add('flex');
-    document.body.classList.add('overflow-hidden');
-  };
-  var closeUpsell = function () {
-    upsellModal.classList.add('hidden');
-    upsellModal.classList.remove('flex');
-    document.body.classList.remove('overflow-hidden');
-  };
+  // Carrossel do mostruário (setas + dots), sem dependências externas.
+  (function () {
+    var track = document.getElementById('carrossel-track');
+    var dotsWrap = document.getElementById('carrossel-dots');
+    var prevBtn = document.getElementById('carrossel-prev');
+    var nextBtn = document.getElementById('carrossel-next');
+    if (!track || !dotsWrap) return;
 
-  document.getElementById('btn-essencial').addEventListener('click', openUpsell);
-  document.getElementById('upsell-close').addEventListener('click', closeUpsell);
-  document.getElementById('upsell-backdrop').addEventListener('click', closeUpsell);
-  document.getElementById('upsell-decline').addEventListener('click', function (e) {
-    closeUpsell();
-  });
-  document.addEventListener('keydown', function (e) {
-    if (e.key === 'Escape') closeUpsell();
-  });
+    var cards = Array.prototype.slice.call(track.querySelectorAll('.carrossel-card'));
+    cards.forEach(function (card, i) {
+      var dot = document.createElement('button');
+      dot.type = 'button';
+      dot.className = 'carrossel-dot w-2 h-2 rounded-full bg-primary/20';
+      dot.setAttribute('aria-label', 'Ir para o modelo ' + (i + 1));
+      dot.addEventListener('click', function () {
+        card.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+      });
+      dotsWrap.appendChild(dot);
+    });
+    var dots = Array.prototype.slice.call(dotsWrap.querySelectorAll('.carrossel-dot'));
+
+    function updateDots() {
+      var trackRect = track.getBoundingClientRect();
+      var center = trackRect.left + trackRect.width / 2;
+      var closest = 0;
+      var closestDist = Infinity;
+      cards.forEach(function (card, i) {
+        var r = card.getBoundingClientRect();
+        var dist = Math.abs((r.left + r.width / 2) - center);
+        if (dist < closestDist) { closestDist = dist; closest = i; }
+      });
+      dots.forEach(function (d, i) {
+        d.classList.toggle('bg-primary', i === closest);
+        d.classList.toggle('bg-primary/20', i !== closest);
+        d.classList.toggle('w-5', i === closest);
+        d.classList.toggle('w-2', i !== closest);
+      });
+    }
+
+    var ticking = false;
+    track.addEventListener('scroll', function () {
+      if (!ticking) {
+        window.requestAnimationFrame(function () { updateDots(); ticking = false; });
+        ticking = true;
+      }
+    });
+    updateDots();
+
+    if (prevBtn) prevBtn.addEventListener('click', function () {
+      track.scrollBy({ left: -track.clientWidth * 0.85, behavior: 'smooth' });
+    });
+    if (nextBtn) nextBtn.addEventListener('click', function () {
+      track.scrollBy({ left: track.clientWidth * 0.85, behavior: 'smooth' });
+    });
+  })();
 
   // Barra fixa mobile: aparece depois que a hero sai da viewport.
   var stickyBar = document.getElementById('sticky-cta');
