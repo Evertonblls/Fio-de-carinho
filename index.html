@@ -77,6 +77,15 @@ src="https://www.facebook.com/tr?id=1096195466206984&ev=PageView&noscript=1"
     transition: transform .35s ease;
   }
   .sticky-cta.is-visible { transform: translateY(0); }
+  .sales-toast {
+    transform: translateY(16px);
+    opacity: 0;
+    transition: transform .35s ease, opacity .35s ease;
+  }
+  .sales-toast.is-visible { transform: translateY(0); opacity: 1; }
+  @media (prefers-reduced-motion: reduce) {
+    .sales-toast { transition: opacity .25s ease; transform: none; }
+  }
 </style>
 </head>
 <body class="font-sans text-ink antialiased">
@@ -90,6 +99,25 @@ src="https://www.facebook.com/tr?id=1096195466206984&ev=PageView&noscript=1"
     COMPLETO: 'https://pay.wiapy.com/EUBE-WpYBlrX',          // Biblioteca Completa, R$19,90
   };
 
+  // Prazo da condição especial (faixa do topo + contador da seção de oferta): sempre
+  // "hoje às 23h59, horário de Brasília" — recalculado automaticamente todo dia, sem
+  // precisar editar essa data manualmente. Usa o dia civil de Brasília (America/Sao_Paulo),
+  // não o fuso do visitante.
+  window.getPromoDeadline = function () {
+    var parts = new Intl.DateTimeFormat('en-CA', {
+      timeZone: 'America/Sao_Paulo',
+      year: 'numeric', month: '2-digit', day: '2-digit',
+    }).formatToParts(new Date());
+    var y, m, d;
+    parts.forEach(function (p) {
+      if (p.type === 'year') y = p.value;
+      if (p.type === 'month') m = p.value;
+      if (p.type === 'day') d = p.value;
+    });
+    return new Date(y + '-' + m + '-' + d + 'T23:59:00-03:00');
+  };
+  window.PROMO_DEADLINE = window.getPromoDeadline();
+
   // ===================== ARQUITETURA DE FUNIL (documentação, nada abaixo é usado nesta página) =====================
   // Esta landing page vende SOMENTE o produto principal (Biblioteca Essencial / Biblioteca Completa),
   // cada botão indo direto para o checkout correspondente. NÃO existe mais oferta intermediária/modal.
@@ -100,17 +128,12 @@ src="https://www.facebook.com/tr?id=1096195466206984&ev=PageView&noscript=1"
   // 1) PRODUTO PRINCIPAL — Biblioteca da Bordadeira (implementado nesta página)
   //    Essencial R$9,90 (250 riscos, 5 categorias) / Completa R$19,90 (500 riscos, 10 categorias)
   //
-  // 2) ORDER BUMP 1 (no checkout) — Kit da Bordadeira Organizada — R$9,90 (planejado)
-  //    Headline: "Organize suas encomendas do pedido à entrega."
-  //    Inclui: Planilha de Precificação, Ficha de Encomenda, Controle de Pedidos,
-  //    Mensagens Prontas para WhatsApp, Etiquetas, Cartões de Agradecimento.
-  //    Bônus: Lista de Fornecedores.
-  //    Copy do checkbox: "SIM! Quero adicionar o Kit da Bordadeira Organizada por apenas R$9,90"
-  //    Descrição: "Leve também ferramentas prontas para precificar, registrar pedidos, organizar
-  //    encomendas e profissionalizar seu atendimento."
-  //    ORDER_BUMP_KIT_ORGANIZADA_ID: '',
+  // 2) UPSELL (pós-compra) — Kit da Bordadeira Organizada — R$19,90 — implementado em /upsell-kit/
+  //    Página própria (não é mais order bump de checkout). Config de preço/checkout/tracking
+  //    centralizada em upsell-kit/index.html (window.UPSELL_KIT / window.CHECKOUT.KIT).
+  //    Pendências de integração: link de checkout do Kit no Wiapy e URL de recusa (ver TODOs no arquivo).
   //
-  // 3) ORDER BUMP 2 (no checkout) — Coleção Especial Panos de Prato — R$7,90 (planejado)
+  // 3) ORDER BUMP (no checkout) — Coleção Especial Panos de Prato — R$7,90 (planejado)
   //    Headline: "Tenha ainda mais opções para encomendas de panos de prato."
   //    Copy do checkbox: "SIM! Quero adicionar a Coleção Especial de Panos de Prato"
   //    Descrição: "Amplie seu acervo com uma coleção específica de modelos para panos de prato,
@@ -127,7 +150,12 @@ src="https://www.facebook.com/tr?id=1096195466206984&ev=PageView&noscript=1"
 </script>
 
 <!-- ===================== HEADER ===================== -->
-<header class="fixed top-0 inset-x-0 z-50 bg-bg/95 backdrop-blur border-b border-primary/10">
+<header id="site-header" class="fixed top-0 inset-x-0 z-50 bg-bg/95 backdrop-blur border-b border-primary/10">
+  <div id="promo-bar" class="bg-primary text-white text-center">
+    <p id="promo-bar-text" class="max-w-6xl mx-auto px-4 py-1.5 text-[10px] sm:text-[11px] font-bold uppercase tracking-normal sm:tracking-wide leading-snug">
+      Condição especial disponível hoje
+    </p>
+  </div>
   <div class="max-w-6xl mx-auto px-5 lg:px-10 h-16 flex items-center justify-between">
     <div class="flex items-center gap-3">
       <div class="w-10 h-10 rounded-full border-2 border-primary flex items-center justify-center shrink-0">
@@ -147,7 +175,7 @@ src="https://www.facebook.com/tr?id=1096195466206984&ev=PageView&noscript=1"
   </div>
 </header>
 
-<main class="pt-16">
+<main id="main-content" class="pt-16">
 
   <!-- ===================== 1. HERO ===================== -->
   <section id="inicio" class="w-full px-5 lg:px-10 py-14 lg:py-24">
@@ -155,8 +183,8 @@ src="https://www.facebook.com/tr?id=1096195466206984&ev=PageView&noscript=1"
       <div>
         <p class="font-sans text-xs sm:text-sm font-bold uppercase tracking-[0.18em] text-accent mb-5">Para bordadeiras que trabalham com encomendas</p>
 
-        <h1 class="font-serif font-black text-primary text-3xl sm:text-4xl lg:text-5xl leading-[1.15] mb-6">
-          <span class="text-accent">+500 modelos</span> organizados para você ter sempre o risco certo para mostrar às clientes e <span class="text-accent">aproveitar mais encomendas</span>
+        <h1 class="font-serif font-black text-ink text-3xl sm:text-4xl lg:text-5xl leading-[1.15] mb-6">
+          <span class="text-primary">+500 modelos organizados</span> para não deixar mais uma <span class="text-accent">encomenda escapar</span> por falta do <span class="text-primary">risco certo</span>
         </h1>
 
         <div class="lg:hidden mb-8">
@@ -164,8 +192,7 @@ src="https://www.facebook.com/tr?id=1096195466206984&ev=PageView&noscript=1"
         </div>
 
         <p class="text-ink/80 text-lg sm:text-xl leading-relaxed mb-8 max-w-[540px]">
-          <strong class="font-semibold text-ink">Pare de perder tempo procurando riscos na internet.</strong> Tenha seus modelos sempre à mão para encontrar opções,
-          mostrar às clientes e começar cada novo pedido com <strong class="font-semibold text-ink">muito mais agilidade</strong>.
+          Tenha +500 modelos organizados, prontos para imprimir e mostrar às clientes sempre que um novo pedido chegar.
         </p>
 
         <div class="grid grid-cols-2 gap-3 mb-9 max-w-[480px]">
@@ -195,8 +222,12 @@ src="https://www.facebook.com/tr?id=1096195466206984&ev=PageView&noscript=1"
           </div>
         </div>
 
+        <p class="inline-flex items-center gap-1.5 text-[11px] sm:text-xs font-bold uppercase tracking-wide text-accent mb-6">
+          <span class="text-primary">Novo:</span> Videoaulas bônus inclusas
+        </p>
+
         <a href="#oferta" class="cta-btn inline-flex items-center justify-center gap-3 bg-primary hover:bg-primary-hover text-white font-sans font-bold text-base sm:text-lg uppercase tracking-wide px-8 py-4 sm:px-10 sm:py-5 rounded-full shadow-lg shadow-primary/20 transition-colors w-full sm:w-fit text-center">
-          Quero Ter Meus Modelos Sempre à Mão
+          Quero Ter Meus Riscos Sempre à Mão
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 shrink-0"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
         </a>
         <div class="flex flex-wrap items-center gap-x-2 gap-y-1 mt-4 text-[13px] text-ink/60 font-medium">
@@ -208,7 +239,31 @@ src="https://www.facebook.com/tr?id=1096195466206984&ev=PageView&noscript=1"
       </div>
 
       <div class="relative hidden lg:block">
-        <img src="images/hero/biblioteca-500-modelos.jpg" alt="Biblioteca da Bordadeira: +500 modelos de riscos organizados para bordado manual, em 10 categorias, prontos para imprimir" class="w-full aspect-square rounded-[1.75rem] border border-primary/15 shadow-xl object-cover" />
+        <img src="images/catalogo/sagrado-coracao-jesus.jpg" alt="" aria-hidden="true" loading="lazy" class="absolute -top-6 -left-8 w-28 h-28 rounded-xl border-4 border-white shadow-lg object-cover -rotate-[10deg] z-0" />
+        <img src="images/catalogo/xicaras-de-cafe.jpg" alt="" aria-hidden="true" loading="lazy" class="absolute top-10 -right-10 w-24 h-24 rounded-xl border-4 border-white shadow-lg object-cover rotate-[8deg] z-0" />
+        <img src="images/hero/biblioteca-capa-riscos.webp" alt="" aria-hidden="true" loading="lazy" class="absolute -bottom-7 -right-6 w-32 h-32 rounded-xl border-4 border-white shadow-lg object-cover rotate-[6deg] z-0" />
+
+        <img src="images/hero/biblioteca-500-modelos.jpg" alt="Biblioteca da Bordadeira: +500 modelos de riscos organizados para bordado manual, em 10 categorias, prontos para imprimir" class="relative z-10 w-full aspect-square rounded-[1.75rem] border border-primary/15 shadow-xl object-cover" />
+
+        <span class="absolute -bottom-4 left-6 z-20 bg-white border border-primary/15 shadow-md rounded-full px-4 py-2 text-[11px] font-bold uppercase tracking-wide text-primary -rotate-2">
+          Riscos prontos para bordar
+        </span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== 1.5. FAIXA DE VARIEDADE ===================== -->
+  <section class="w-full px-5 lg:px-10 pb-10 lg:pb-14">
+    <div class="max-w-3xl mx-auto text-center">
+      <p class="font-serif font-bold text-primary text-lg sm:text-xl mb-1.5">Um risco para cada nova encomenda</p>
+      <p class="text-ink/55 text-xs sm:text-sm mb-5">Religiosos, flores, cozinha, infantil, monogramas, datas especiais e muito mais.</p>
+      <div class="grid grid-cols-6 gap-1.5 sm:gap-2 max-w-lg mx-auto">
+        <img src="images/catalogo/nossa-senhora-aparecida.jpg" alt="Risco de Nossa Senhora Aparecida" loading="lazy" class="aspect-square w-full rounded-md sm:rounded-lg object-cover border border-primary/10" />
+        <img src="images/catalogo/colmeia-abelhinhas.jpg" alt="Risco de colmeia com abelhinhas" loading="lazy" class="aspect-square w-full rounded-md sm:rounded-lg object-cover border border-primary/10" />
+        <img src="images/catalogo/casa-feliz-panela-fogo.jpg" alt="Risco de cozinha, Casa Feliz Panela no Fogo" loading="lazy" class="aspect-square w-full rounded-md sm:rounded-lg object-cover border border-primary/10" />
+        <img src="images/catalogo/vasinho-manjericao.jpg" alt="Risco de vasinho de manjericão floral" loading="lazy" class="aspect-square w-full rounded-md sm:rounded-lg object-cover border border-primary/10" />
+        <img src="images/catalogo/peixinhos-aquario.jpg" alt="Risco de peixinhos no aquário, tema infantil" loading="lazy" class="aspect-square w-full rounded-md sm:rounded-lg object-cover border border-primary/10" />
+        <img src="images/catalogo/cogumelos-na-chuva.jpg" alt="Risco de cogumelos na chuva" loading="lazy" class="aspect-square w-full rounded-md sm:rounded-lg object-cover border border-primary/10" />
       </div>
     </div>
   </section>
@@ -354,45 +409,12 @@ src="https://www.facebook.com/tr?id=1096195466206984&ev=PageView&noscript=1"
     </div>
   </section>
 
-  <!-- ===================== 3. PROBLEMA → SOLUÇÃO ===================== -->
-  <section id="problema" class="w-full px-5 lg:px-10 py-16 lg:py-24">
+  <!-- ===================== 3. POR DENTRO DA BIBLIOTECA ===================== -->
+  <section id="por-dentro" class="w-full px-5 lg:px-10 py-16 lg:py-24">
     <div class="max-w-4xl mx-auto text-center">
-      <h2 class="font-serif font-bold text-primary text-[1.85rem] sm:text-4xl lg:text-5xl leading-[1.12] mb-8">Pare de Procurar um Risco do Zero a Cada Nova Encomenda</h2>
-
-      <div class="bg-white border border-primary/10 rounded-2xl px-5 py-4 mb-10 max-w-md mx-auto shadow-sm">
-        <p class="text-base text-ink/80 italic">"Oi, você tem algum modelo com flores para pano de prato?"</p>
-      </div>
-
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
-        <div class="rounded-2xl border border-primary/15 px-6 py-8">
-          <span class="inline-block bg-primary/10 text-primary text-[11px] font-bold uppercase tracking-wide px-3 py-1 rounded-full mb-5">Antes</span>
-          <ul class="space-y-3 text-base text-ink/60 text-left">
-            <li>Cliente pede um tema</li>
-            <li class="text-accent/50">↓</li>
-            <li>Você abre Pinterest / Google</li>
-            <li class="text-accent/50">↓</li>
-            <li>Procura referências</li>
-            <li class="text-accent/50">↓</li>
-            <li>Salva várias imagens</li>
-            <li class="text-accent/50">↓</li>
-            <li>Perde tempo</li>
-          </ul>
-        </div>
-        <div class="rounded-2xl border-2 border-accent bg-accent/5 px-6 py-8">
-          <span class="inline-block bg-accent text-white text-[11px] font-bold uppercase tracking-wide px-3 py-1 rounded-full mb-5">Com Sua Biblioteca</span>
-          <ul class="space-y-3 text-base text-ink/85 font-medium text-left">
-            <li>Cliente pede um tema</li>
-            <li class="text-accent">↓</li>
-            <li>Você abre seu acervo</li>
-            <li class="text-accent">↓</li>
-            <li>Encontra opções</li>
-            <li class="text-accent">↓</li>
-            <li>Mostra à cliente</li>
-            <li class="text-accent">↓</li>
-            <li>Começa a produzir</li>
-          </ul>
-        </div>
-      </div>
+      <h2 class="font-serif font-bold text-primary text-[1.85rem] sm:text-4xl lg:text-5xl leading-[1.12] mb-4">Tudo Organizado e Pronto para Usar</h2>
+      <p class="text-ink/70 text-base sm:text-lg leading-relaxed mb-10 max-w-2xl mx-auto">Você não recebe arquivos soltos. A Biblioteca é organizada por categorias para encontrar, escolher e imprimir seus riscos com muito mais facilidade.</p>
+      <img src="images/biblioteca/Fio-de-Carinho-Por-Dentro-Biblioteca.webp" alt="Biblioteca da Bordadeira organizada por categorias com prévia dos arquivos e modelos" width="1536" height="1024" loading="lazy" class="w-full h-auto rounded-2xl border border-primary/10 shadow-sm" />
     </div>
   </section>
 
@@ -412,11 +434,11 @@ src="https://www.facebook.com/tr?id=1096195466206984&ev=PageView&noscript=1"
   <!-- ===================== 5. VÍDEO: IMPRIMIR DIRETO NO TECIDO ===================== -->
   <section id="video" class="w-full px-5 lg:px-10 py-16 lg:py-24">
     <div class="max-w-3xl mx-auto flex flex-col items-center text-center">
-      <p class="font-sans text-xs sm:text-sm font-bold uppercase tracking-[0.18em] text-accent mb-3">Passo a Passo em Vídeo</p>
-      <h2 class="font-serif font-bold text-primary text-[1.85rem] sm:text-4xl lg:text-5xl leading-[1.12] mb-5">Aprenda a Imprimir o Desenho Direto no Tecido</h2>
+      <p class="font-sans text-xs sm:text-sm font-bold uppercase tracking-[0.18em] text-accent mb-3">Videoaulas Bônus</p>
+      <h2 class="font-serif font-bold text-primary text-[1.85rem] sm:text-4xl lg:text-5xl leading-[1.12] mb-5">Aprenda a Usar Seus Riscos na Prática</h2>
       <p class="text-base sm:text-lg text-ink/70 leading-relaxed max-w-xl mb-10">
-        Você recebe um vídeo passo a passo mostrando como preparar e imprimir o desenho diretamente no
-        tecido, deixando sua produção ainda mais prática.
+        Além dos +500 riscos, você também recebe videoaulas bônus para aprender a preparar, imprimir e
+        transferir os modelos para o tecido com mais facilidade e segurança.
       </p>
 
       <div class="w-full max-w-md rounded-2xl border border-primary/15 bg-bg p-2 sm:p-3 shadow-[0_24px_55px_-28px_rgba(122,59,46,0.4)]">
@@ -441,65 +463,60 @@ src="https://www.facebook.com/tr?id=1096195466206984&ev=PageView&noscript=1"
         <p class="text-ink/70 text-base sm:text-lg leading-relaxed">Além dos riscos, você recebe materiais extras para agilizar ainda mais suas encomendas.</p>
       </div>
 
-      <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 lg:gap-5">
+      <div class="flex flex-wrap justify-center gap-4 lg:gap-5">
 
-        <div class="rounded-2xl overflow-hidden border border-primary/10 bg-white shadow-sm flex flex-col">
-          <div class="relative aspect-[4/3] bg-gradient-to-br from-accent/20 via-bg to-primary/10 flex flex-col items-center justify-center text-center px-3 py-4">
-            <span class="absolute top-2.5 left-2.5 bg-accent text-white text-[9px] font-bold uppercase tracking-wide px-2.5 py-1 rounded-full shadow-sm">Grátis</span>
-            <span class="text-2xl mb-1.5">📖</span>
-            <p class="font-serif font-bold text-primary text-base leading-tight">Catálogo Digital</p>
-            <p class="font-serif italic text-primary/60 text-xs">para Clientes</p>
+        <div class="w-full sm:w-[calc(50%-0.5rem)] lg:w-[calc(33.333%-0.834rem)] rounded-2xl overflow-hidden border border-primary/10 bg-white shadow-sm flex flex-col">
+          <div class="relative aspect-[4/3]">
+            <span class="absolute top-2.5 left-2.5 z-10 bg-accent text-white text-[9px] font-bold uppercase tracking-wide px-2.5 py-1 rounded-full shadow-sm">Grátis</span>
+            <img src="images/bonus/Bonus-Videoaulas.webp" alt="Mockup das Videoaulas Bônus em um tablet, mostrando as etapas de impressão, transferência e bordado" width="900" height="675" loading="lazy" class="w-full h-full object-cover" />
           </div>
           <div class="px-3.5 py-3.5 flex-1">
-            <p class="text-[13px] text-ink/70 leading-relaxed">Mostre seus modelos e feche pedidos com mais facilidade, direto pelo celular.</p>
+            <p class="font-serif font-bold text-primary text-base leading-tight mb-0.5">Videoaulas Bônus</p>
+            <p class="text-[13px] text-ink/70 leading-relaxed">Aprenda a preparar, imprimir e transferir seus riscos para o tecido com mais facilidade.</p>
           </div>
         </div>
 
-        <div class="rounded-2xl overflow-hidden border border-primary/10 bg-white shadow-sm flex flex-col">
-          <div class="relative aspect-[4/3] bg-gradient-to-br from-accent/20 via-bg to-primary/10 flex flex-col items-center justify-center text-center px-3 py-4">
-            <span class="absolute top-2.5 left-2.5 bg-accent text-white text-[9px] font-bold uppercase tracking-wide px-2.5 py-1 rounded-full shadow-sm">Grátis</span>
-            <span class="text-2xl mb-1.5">🎥</span>
-            <p class="font-serif font-bold text-primary text-base leading-tight">Vídeo Passo a Passo</p>
-            <p class="font-serif italic text-primary/60 text-xs">Transferência no Tecido</p>
+        <div class="w-full sm:w-[calc(50%-0.5rem)] lg:w-[calc(33.333%-0.834rem)] rounded-2xl overflow-hidden border border-primary/10 bg-white shadow-sm flex flex-col">
+          <div class="relative aspect-[4/3]">
+            <span class="absolute top-2.5 left-2.5 z-10 bg-accent text-white text-[9px] font-bold uppercase tracking-wide px-2.5 py-1 rounded-full shadow-sm">Grátis</span>
+            <img src="images/bonus/Bonus-Catalogo-Digital.webp" alt="Mockup do Catálogo Digital para Clientes em um celular" width="900" height="600" loading="lazy" class="w-full h-full object-cover" />
           </div>
           <div class="px-3.5 py-3.5 flex-1">
-            <p class="text-[13px] text-ink/70 leading-relaxed">Veja como imprimir o risco direto no tecido, sem manchar.</p>
+            <p class="font-serif font-bold text-primary text-base leading-tight mb-0.5">Catálogo Digital para Clientes</p>
+            <p class="text-[13px] text-ink/70 leading-relaxed">Apresente opções pelo celular e ajude suas clientes a escolherem o modelo da encomenda.</p>
           </div>
         </div>
 
-        <div class="rounded-2xl overflow-hidden border border-primary/10 bg-white shadow-sm flex flex-col">
-          <div class="relative aspect-[4/3] bg-gradient-to-br from-accent/20 via-bg to-primary/10 flex flex-col items-center justify-center text-center px-3 py-4">
-            <span class="absolute top-2.5 left-2.5 bg-accent text-white text-[9px] font-bold uppercase tracking-wide px-2.5 py-1 rounded-full shadow-sm">Grátis</span>
-            <span class="text-2xl mb-1.5">📐</span>
-            <p class="font-serif font-bold text-primary text-base leading-tight">Guia de Transferência</p>
-            <p class="font-serif italic text-primary/60 text-xs">para Tecido</p>
+        <div class="w-full sm:w-[calc(50%-0.5rem)] lg:w-[calc(33.333%-0.834rem)] rounded-2xl overflow-hidden border border-primary/10 bg-white shadow-sm flex flex-col">
+          <div class="relative aspect-[4/3]">
+            <span class="absolute top-2.5 left-2.5 z-10 bg-accent text-white text-[9px] font-bold uppercase tracking-wide px-2.5 py-1 rounded-full shadow-sm">Grátis</span>
+            <img src="images/bonus/Bonus-Guia-Transferencia.webp" alt="Mockup do Guia de Transferência para Tecido" width="900" height="675" loading="lazy" class="w-full h-full object-cover" />
           </div>
           <div class="px-3.5 py-3.5 flex-1">
-            <p class="text-[13px] text-ink/70 leading-relaxed">Passo a passo prático pra transferir qualquer risco sem errar.</p>
+            <p class="font-serif font-bold text-primary text-base leading-tight mb-0.5">Guia de Transferência para Tecido</p>
+            <p class="text-[13px] text-ink/70 leading-relaxed">Veja diferentes formas de passar o risco para o tecido com mais segurança.</p>
           </div>
         </div>
 
-        <div class="rounded-2xl overflow-hidden border border-primary/10 bg-white shadow-sm flex flex-col">
-          <div class="relative aspect-[4/3] bg-gradient-to-br from-accent/20 via-bg to-primary/10 flex flex-col items-center justify-center text-center px-3 py-4">
-            <span class="absolute top-2.5 left-2.5 bg-accent text-white text-[9px] font-bold uppercase tracking-wide px-2.5 py-1 rounded-full shadow-sm">Grátis</span>
-            <span class="text-2xl mb-1.5">🔤</span>
-            <p class="font-serif font-bold text-primary text-base leading-tight">Alfabeto &amp; Nomes</p>
-            <p class="font-serif italic text-primary/60 text-xs">Gráficos para Bordar</p>
+        <div class="w-full sm:w-[calc(50%-0.5rem)] lg:w-[calc(33.333%-0.834rem)] rounded-2xl overflow-hidden border border-primary/10 bg-white shadow-sm flex flex-col">
+          <div class="relative aspect-[4/3]">
+            <span class="absolute top-2.5 left-2.5 z-10 bg-accent text-white text-[9px] font-bold uppercase tracking-wide px-2.5 py-1 rounded-full shadow-sm">Grátis</span>
+            <img src="images/bonus/Bonus-Alfabetos-e-Nomes.webp" alt="Mockup dos Gráficos de Alfabetos, Nomes e Monogramas para bordar" width="900" height="675" loading="lazy" class="w-full h-full object-cover" />
           </div>
           <div class="px-3.5 py-3.5 flex-1">
-            <p class="text-[13px] text-ink/70 leading-relaxed">Letras e nomes prontos pra personalizar cada encomenda.</p>
+            <p class="font-serif font-bold text-primary text-base leading-tight mb-0.5">Alfabetos, Nomes e Monogramas</p>
+            <p class="text-[13px] text-ink/70 leading-relaxed">Personalize toalhas, enxovais, bastidores e presentes com letras prontas para bordar.</p>
           </div>
         </div>
 
-        <div class="rounded-2xl overflow-hidden border border-primary/10 bg-white shadow-sm flex flex-col">
-          <div class="relative aspect-[4/3] bg-gradient-to-br from-accent/20 via-bg to-primary/10 flex flex-col items-center justify-center text-center px-3 py-4">
-            <span class="absolute top-2.5 left-2.5 bg-primary text-white text-[9px] font-bold uppercase tracking-wide px-2.5 py-1 rounded-full shadow-sm">Novo</span>
-            <span class="text-2xl mb-1.5">✍️</span>
-            <p class="font-serif font-bold text-primary text-base leading-tight">Frases para Bordar</p>
-            <p class="font-serif italic text-primary/60 text-xs">Coleção Especial</p>
+        <div class="w-full sm:w-[calc(50%-0.5rem)] lg:w-[calc(33.333%-0.834rem)] rounded-2xl overflow-hidden border border-primary/10 bg-white shadow-sm flex flex-col">
+          <div class="relative aspect-[4/3]">
+            <span class="absolute top-2.5 left-2.5 z-10 bg-primary text-white text-[9px] font-bold uppercase tracking-wide px-2.5 py-1 rounded-full shadow-sm">Novo</span>
+            <img src="images/bonus/Bonus-Frases-para-Bordar.webp" alt="Mockup do material Frases para Bordar" width="900" height="675" loading="lazy" class="w-full h-full object-cover" />
           </div>
           <div class="px-3.5 py-3.5 flex-1">
-            <p class="text-[13px] text-ink/70 leading-relaxed">Frases afetivas prontas pra combinar com seus riscos.</p>
+            <p class="font-serif font-bold text-primary text-base leading-tight mb-0.5">Frases para Bordar</p>
+            <p class="text-[13px] text-ink/70 leading-relaxed">Frases afetivas prontas para personalizar peças, presentes e encomendas.</p>
           </div>
         </div>
 
@@ -521,6 +538,27 @@ src="https://www.facebook.com/tr?id=1096195466206984&ev=PageView&noscript=1"
         <p class="font-sans text-xs sm:text-sm font-bold uppercase tracking-[0.18em] text-accent mb-3">Oferta especial</p>
         <h2 class="font-serif font-bold text-primary text-[1.85rem] sm:text-4xl lg:text-5xl leading-[1.12] mb-4">Escolha Como Quer Começar</h2>
         <p class="text-ink/70 text-base sm:text-lg leading-relaxed">Tenha seus modelos organizados e pare de começar uma busca do zero toda vez que uma cliente fizer um pedido.</p>
+      </div>
+
+      <div id="oferta-countdown-wrap" class="max-w-xs mx-auto text-center mb-10">
+        <p class="text-[11px] sm:text-xs font-bold uppercase tracking-wide text-primary mb-1">Condição especial por tempo limitado</p>
+        <p class="text-xs text-ink/55 mb-3">O acesso promocional encerra em:</p>
+        <div class="inline-flex items-start gap-2.5 sm:gap-3">
+          <div class="flex flex-col items-center">
+            <span id="cd-h" class="font-serif font-black text-primary text-2xl sm:text-3xl leading-none">00</span>
+            <span class="text-[9px] font-sans font-semibold uppercase tracking-wide text-ink/45 mt-1">Horas</span>
+          </div>
+          <span class="font-serif font-black text-primary/30 text-2xl sm:text-3xl leading-none">:</span>
+          <div class="flex flex-col items-center">
+            <span id="cd-m" class="font-serif font-black text-primary text-2xl sm:text-3xl leading-none">00</span>
+            <span class="text-[9px] font-sans font-semibold uppercase tracking-wide text-ink/45 mt-1">Min</span>
+          </div>
+          <span class="font-serif font-black text-primary/30 text-2xl sm:text-3xl leading-none">:</span>
+          <div class="flex flex-col items-center">
+            <span id="cd-s" class="font-serif font-black text-primary text-2xl sm:text-3xl leading-none">00</span>
+            <span class="text-[9px] font-sans font-semibold uppercase tracking-wide text-ink/45 mt-1">Seg</span>
+          </div>
+        </div>
       </div>
 
       <div class="grid grid-cols-1 sm:grid-cols-[0.85fr_1.15fr] gap-6 lg:gap-8 items-stretch max-w-4xl mx-auto">
@@ -567,6 +605,17 @@ src="https://www.facebook.com/tr?id=1096195466206984&ev=PageView&noscript=1"
         <!-- Biblioteca Completa -->
         <div class="relative rounded-[1.75rem] border-2 border-primary bg-white shadow-[0_30px_60px_-30px_rgba(122,59,46,0.4)] px-6 py-10 sm:px-9 sm:py-11 text-center flex flex-col">
           <span class="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-accent text-white text-[10px] font-bold uppercase tracking-wide px-4 py-1.5 rounded-full whitespace-nowrap">Mais Escolhida</span>
+
+          <!-- Texto inicial estático (6 vagas) até o backend real (api/offer-status.js) entrar no
+               ar; a partir daí o JS troca sozinho pelo remainingBonusSlots de verdade. -->
+          <div id="bonus-slots-banner" class="inline-flex items-center justify-center gap-2 self-center bg-[#FBEFE9] border border-primary/20 text-primary text-[10px] sm:text-[11px] font-bold uppercase tracking-wide rounded-full px-3.5 py-1.5 mb-4 mt-2 max-w-full">
+            <span class="relative flex h-2 w-2 shrink-0">
+              <span class="motion-safe:animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-60"></span>
+              <span class="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
+            </span>
+            <span id="bonus-slots-text" class="truncate">Restam apenas 6 vagas com todos os bônus nesta condição</span>
+          </div>
+
           <h3 class="font-serif font-bold text-primary text-2xl mb-1 mt-1">Biblioteca Completa</h3>
           <p class="font-sans text-xs uppercase tracking-wide text-accent font-semibold mb-7">Para quem quer agilizar ainda mais suas encomendas</p>
 
@@ -599,6 +648,10 @@ src="https://www.facebook.com/tr?id=1096195466206984&ev=PageView&noscript=1"
             </li>
             <li class="flex items-start gap-3">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 text-accent shrink-0 mt-0.5"><path d="M20 6 9 17l-5-5"/></svg>
+              <span class="text-sm text-ink/85">Videoaulas bônus com passo a passo prático</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 text-accent shrink-0 mt-0.5"><path d="M20 6 9 17l-5-5"/></svg>
               <span class="text-sm text-ink/85"><strong class="font-semibold">+ todos os 5 bônus</strong> exclusivos acima</span>
             </li>
           </ul>
@@ -606,23 +659,23 @@ src="https://www.facebook.com/tr?id=1096195466206984&ev=PageView&noscript=1"
           <!-- Recap dos bônus: cards completos estão na seção "Bônus Exclusivos" acima, aqui só um resumo no ponto de decisão. -->
           <div class="grid grid-cols-1 gap-1.5 mb-8 text-left">
             <div class="flex items-center gap-2">
-              <span class="text-sm shrink-0">📖</span>
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="w-3.5 h-3.5 text-accent shrink-0"><path d="M20 6 9 17l-5-5"/></svg>
+              <span class="text-xs text-ink/80">Videoaulas Bônus</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="w-3.5 h-3.5 text-accent shrink-0"><path d="M20 6 9 17l-5-5"/></svg>
               <span class="text-xs text-ink/80">Catálogo Digital para Clientes</span>
             </div>
             <div class="flex items-center gap-2">
-              <span class="text-sm shrink-0">🎥</span>
-              <span class="text-xs text-ink/80">Vídeo Passo a Passo: Transferência no Tecido</span>
-            </div>
-            <div class="flex items-center gap-2">
-              <span class="text-sm shrink-0">📐</span>
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="w-3.5 h-3.5 text-accent shrink-0"><path d="M20 6 9 17l-5-5"/></svg>
               <span class="text-xs text-ink/80">Guia de Transferência para Tecido</span>
             </div>
             <div class="flex items-center gap-2">
-              <span class="text-sm shrink-0">🔤</span>
-              <span class="text-xs text-ink/80">Gráficos de Alfabeto e Nomes</span>
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="w-3.5 h-3.5 text-accent shrink-0"><path d="M20 6 9 17l-5-5"/></svg>
+              <span class="text-xs text-ink/80">Alfabetos, Nomes e Monogramas</span>
             </div>
             <div class="flex items-center gap-2">
-              <span class="text-sm shrink-0">✍️</span>
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="w-3.5 h-3.5 text-accent shrink-0"><path d="M20 6 9 17l-5-5"/></svg>
               <span class="text-xs text-ink/80">Frases para Bordar</span>
             </div>
           </div>
@@ -793,7 +846,7 @@ src="https://www.facebook.com/tr?id=1096195466206984&ev=PageView&noscript=1"
           </div>
           <div class="faq-content grid transition-all duration-300 overflow-hidden grid-rows-[0fr] opacity-0">
             <div class="overflow-hidden">
-              <p class="text-sm sm:text-base text-ink/70 leading-relaxed pt-3">A Biblioteca Completa já inclui o guia rápido de técnicas de transferência e um vídeo passo a passo mostrando como preparar e imprimir o desenho diretamente no tecido.</p>
+              <p class="text-sm sm:text-base text-ink/70 leading-relaxed pt-3">A Biblioteca Completa inclui videoaulas bônus com orientações práticas para preparar, imprimir e transferir os riscos para o tecido.</p>
             </div>
           </div>
         </div>
@@ -856,11 +909,22 @@ src="https://www.facebook.com/tr?id=1096195466206984&ev=PageView&noscript=1"
 </footer>
 
 <!-- ===================== BARRA FIXA MOBILE ===================== -->
-<div id="sticky-cta" class="sticky-cta fixed bottom-0 inset-x-0 z-40 sm:hidden bg-white border-t border-primary/15 px-4 py-3 flex items-center justify-between gap-3 shadow-[0_-8px_20px_-10px_rgba(0,0,0,0.15)]">
-  <span class="text-[12px] font-semibold text-ink leading-tight">Biblioteca da Bordadeira<br /><span class="text-accent">a partir de R$9,90</span></span>
-  <a href="#oferta" class="cta-btn inline-flex items-center justify-center gap-1.5 bg-primary text-white font-sans font-bold text-xs uppercase tracking-wide px-5 py-3 rounded-full whitespace-nowrap shrink-0">
-    Quero Acessar
+<div id="sticky-cta" class="sticky-cta fixed bottom-0 inset-x-0 z-40 sm:hidden bg-white border-t border-primary/15 px-4 py-3 shadow-[0_-8px_20px_-10px_rgba(0,0,0,0.15)]">
+  <a href="#oferta" class="cta-btn flex items-center justify-center gap-1.5 bg-primary text-white font-sans font-bold text-xs uppercase tracking-wide px-5 py-3.5 rounded-full w-full">
+    Ver Condição Especial
   </a>
+</div>
+
+<!-- ===================== NOTIFICAÇÃO DE VENDA RECENTE ===================== -->
+<!-- Só aparece com vendas reais vindas de /api/recent-sales. Sem API configurada/dados, fica sempre oculta. -->
+<div id="sales-toast" hidden role="status" aria-live="polite" class="sales-toast fixed z-30 left-3 right-3 bottom-24 sm:left-5 sm:right-auto sm:bottom-5 sm:w-auto sm:max-w-xs bg-bg border border-accent/25 rounded-2xl shadow-md px-4 py-3 flex items-start gap-3">
+  <span class="text-primary shrink-0 mt-0.5">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4"><path d="M12 21s-7-4.5-9.5-9C1 8 3 5 6 5c2 0 3.5 1 4 2 .5-1 2-2 4-2 3 0 5 3 3.5 7C19 16.5 12 21 12 21Z"/></svg>
+  </span>
+  <span id="sales-toast-text" class="text-xs sm:text-[13px] text-ink/85 leading-snug flex-1"></span>
+  <button type="button" id="sales-toast-close" aria-label="Fechar notificação" class="text-ink/40 hover:text-ink/70 shrink-0 -mt-0.5 -mr-1 p-1">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-3.5 h-3.5"><path d="M18 6 6 18M6 6l12 12"/></svg>
+  </button>
 </div>
 
 <script>
@@ -954,6 +1018,216 @@ src="https://www.facebook.com/tr?id=1096195466206984&ev=PageView&noscript=1"
     }, { threshold: 0 });
     observer.observe(heroSection);
   }
+
+  // ===================== FAIXA DE ESCASSEZ (topo) + CONTADOR DA OFERTA =====================
+  // O prazo é sempre "hoje às 23h59, horário de Brasília" (window.getPromoDeadline, definida
+  // no config do topo do arquivo). Recalculamos a cada tick para o texto e o contador virarem
+  // sozinhos à meia-noite de Brasília, sem precisar editar nenhuma data manualmente todo dia.
+  (function () {
+    var header = document.getElementById('site-header');
+    var bar = document.getElementById('promo-bar');
+    var barText = document.getElementById('promo-bar-text');
+    var main = document.getElementById('main-content');
+    var wrap = document.getElementById('oferta-countdown-wrap');
+    var elH = document.getElementById('cd-h');
+    var elM = document.getElementById('cd-m');
+    var elS = document.getElementById('cd-s');
+    if (!header || !main) return;
+
+    var dateFormatter = new Intl.DateTimeFormat('pt-BR', {
+      timeZone: 'America/Sao_Paulo', day: '2-digit', month: '2-digit', year: 'numeric',
+    });
+
+    function pad(n) { return String(n).padStart(2, '0'); }
+
+    function syncMainOffset() {
+      main.style.paddingTop = header.offsetHeight + 'px';
+    }
+
+    var lastBarVisible = null;
+
+    function tick() {
+      window.PROMO_DEADLINE = window.getPromoDeadline();
+      var diff = window.PROMO_DEADLINE.getTime() - Date.now();
+      var expired = diff <= 0;
+
+      if (bar && barText) {
+        if (!expired && barText.dataset.day !== dateFormatter.format(window.PROMO_DEADLINE)) {
+          barText.dataset.day = dateFormatter.format(window.PROMO_DEADLINE);
+          barText.textContent = 'Condição especial disponível hoje, ' + barText.dataset.day + ', até 23h59';
+        }
+        bar.hidden = expired;
+        if (lastBarVisible !== !expired) {
+          lastBarVisible = !expired;
+          syncMainOffset();
+        }
+      }
+
+      if (wrap && elH && elM && elS) {
+        if (expired) {
+          wrap.hidden = true;
+        } else {
+          wrap.hidden = false;
+          var totalSeconds = Math.floor(diff / 1000);
+          elH.textContent = pad(Math.floor(totalSeconds / 3600));
+          elM.textContent = pad(Math.floor((totalSeconds % 3600) / 60));
+          elS.textContent = pad(totalSeconds % 60);
+        }
+      }
+    }
+
+    tick();
+    syncMainOffset();
+    window.addEventListener('resize', syncMainOffset);
+    setInterval(tick, 1000);
+  })();
+
+  // ===================== VAGAS COM BÔNUS (Biblioteca Completa) =====================
+  // O HTML já nasce com "Restam apenas 6 vagas..." fixo (combinado enquanto o backend
+  // real não está no ar). Assim que /api/offer-status responder com dados reais
+  // (SALES_FEED_ENABLED=true e KV configurado), o JS troca pelo remainingBonusSlots de
+  // verdade — sem backend configurado, o texto fixo permanece como está no HTML.
+  // O número nunca é decrementado aqui no front, só refletido a partir do backend.
+  (function () {
+    var text = document.getElementById('bonus-slots-text');
+    if (!text) return;
+
+    fetch('/api/offer-status')
+      .then(function (r) { return r.ok ? r.json() : { configured: false }; })
+      .then(function (data) {
+        if (!data || !data.configured) return;
+        var remainingBonusSlots = data.remainingBonusSlots;
+        if (typeof remainingBonusSlots !== 'number') return;
+        text.textContent = remainingBonusSlots <= 0
+          ? 'Os bônus desta condição foram encerrados'
+          : 'Restam ' + remainingBonusSlots + ' acessos com todos os bônus nesta condição';
+      })
+      .catch(function () {});
+  })();
+
+  // ===================== NOTIFICAÇÕES DE VENDAS RECENTES =====================
+  // Só usa vendas reais vindas de /api/recent-sales (populada pelo webhook da Wiapy no
+  // backend). Sem vendas reais, sem API configurada, ou API fora do ar, o componente
+  // nunca aparece — nenhum nome, cidade ou horário é inventado aqui. Não afeta o
+  // carregamento inicial: o toast começa oculto (display:none) e só busca dados depois
+  // do load, sem bloquear nada.
+  (function () {
+    var toast = document.getElementById('sales-toast');
+    var toastText = document.getElementById('sales-toast-text');
+    var closeBtn = document.getElementById('sales-toast-close');
+    if (!toast || !toastText) return;
+
+    var MAX_PER_SESSION = 4;
+    var VISIBLE_MS = 5000;
+    var GAP_MIN_MS = 12000;
+    var GAP_MAX_MS = 20000;
+    var ANIM_MS = 350;
+    var STORAGE_COUNT_KEY = 'fdcSalesToastCount';
+    var STORAGE_LAST_MSG_KEY = 'fdcSalesToastLastMsg';
+
+    function getShownCount() {
+      var n = parseInt(sessionStorage.getItem(STORAGE_COUNT_KEY) || '0', 10);
+      return Number.isFinite(n) ? n : 0;
+    }
+    function setShownCount(n) {
+      try { sessionStorage.setItem(STORAGE_COUNT_KEY, String(n)); } catch (err) {}
+    }
+    function getLastMessage() {
+      try { return sessionStorage.getItem(STORAGE_LAST_MSG_KEY) || ''; } catch (err) { return ''; }
+    }
+    function setLastMessage(msg) {
+      try { sessionStorage.setItem(STORAGE_LAST_MSG_KEY, msg); } catch (err) {}
+    }
+    function randomGap() {
+      return GAP_MIN_MS + Math.random() * (GAP_MAX_MS - GAP_MIN_MS);
+    }
+
+    function messageFor(sale) {
+      var place = sale.city || sale.state;
+      var withPlace = [
+        'Uma bordadeira de ' + place + ' acabou de garantir a Biblioteca Completa.',
+        'Novo acesso à Biblioteca da Bordadeira confirmado há poucos minutos em ' + place + '.',
+        'Mais uma bordadeira de ' + place + ' garantiu seus +500 riscos organizados.',
+      ];
+      var withoutPlace = [
+        'Uma nova bordadeira garantiu seu acesso.',
+        'Novo acesso à Biblioteca da Bordadeira confirmado há poucos minutos.',
+        'Mais uma bordadeira garantiu seus +500 riscos organizados.',
+      ];
+      var options = place ? withPlace : withoutPlace;
+      // Nunca repete a mesma mensagem duas vezes seguidas, se houver alternativa.
+      var last = getLastMessage();
+      var candidates = options.filter(function (m) { return m !== last; });
+      var pool = candidates.length ? candidates : options;
+      return pool[Math.floor(Math.random() * pool.length)];
+    }
+
+    var hideTimer = null;
+    var gapTimer = null;
+
+    function hide(after) {
+      toast.classList.remove('is-visible');
+      setTimeout(function () {
+        toast.hidden = true;
+        if (after) after();
+      }, ANIM_MS);
+    }
+
+    function showNext(queue, isPreview) {
+      var shownCount = getShownCount();
+      if ((!isPreview && shownCount >= MAX_PER_SESSION) || !queue.length) return;
+
+      var sale = queue.shift();
+      var message = messageFor(sale);
+      toastText.textContent = message;
+      if (!isPreview) {
+        setLastMessage(message);
+        setShownCount(shownCount + 1);
+      }
+
+      toast.hidden = false;
+      // Força um reflow antes de adicionar a classe, pra transição de entrada rodar.
+      void toast.offsetWidth;
+      toast.classList.add('is-visible');
+
+      hideTimer = setTimeout(function () {
+        hide(function () {
+          if (isPreview) return;
+          gapTimer = setTimeout(function () { showNext(queue); }, randomGap());
+        });
+      }, VISIBLE_MS);
+    }
+
+    if (closeBtn) {
+      closeBtn.addEventListener('click', function () {
+        clearTimeout(hideTimer);
+        clearTimeout(gapTimer);
+        hide();
+      });
+    }
+
+    // Modo de teste: só ativa se alguém digitar ?previewToast=1 na URL, ou rodar
+    // previewSalesToast() manualmente no console. Nunca dispara sozinho para quem só
+    // está navegando — não conta pro limite de sessão nem grava no sessionStorage,
+    // pra não atrapalhar o comportamento real depois.
+    window.previewSalesToast = function () {
+      showNext([{ id: 'preview-' + Date.now(), city: 'Curitiba', at: Date.now() }], true);
+    };
+    if (new URLSearchParams(location.search).get('previewToast')) {
+      setTimeout(window.previewSalesToast, 800);
+    }
+
+    if (getShownCount() >= MAX_PER_SESSION) return;
+
+    fetch('/api/recent-sales')
+      .then(function (r) { return r.ok ? r.json() : { sales: [] }; })
+      .then(function (data) {
+        var sales = Array.isArray(data && data.sales) ? data.sales.slice() : [];
+        if (!sales.length) return;
+        setTimeout(function () { showNext(sales); }, randomGap());
+      })
+      .catch(function () {});
+  })();
 </script>
 
 </body>
